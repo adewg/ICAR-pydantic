@@ -135,7 +135,7 @@ if __name__ == "__main__":
         if os.path.exists(f) and not f.endswith("__init__.py"):
             os.remove(f)
     code_cleaner = CodeCleaner(
-        input_file="../tmp/raw_model.py",
+        input_file="../tmp/raw_models.py",
         specifications="../ICAR-schema/bundled-schemes/combinedURLScheme.json",
         types_folder="../ICAR-schema/types",
         resources_folder="../ICAR-schema/resources",
