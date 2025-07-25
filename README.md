@@ -10,7 +10,7 @@ Requires:
 
 ```bash
 pip install -r requirements.txt
-git clone git@github.com:adewg/ICAR.git
+git clone git@github.com:adewg/ICAR.git ICAR-schema
 pre-commit install
 ```
 

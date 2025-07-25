@@ -3,4 +3,4 @@
 BASEDIR=$(dirname $0)
 cd "$BASEDIR"
 cd ..
-datamodel-codegen --input ./ICAR/bundled-schemes/combinedURLScheme.json --input-file-type openapi --output ./tmp/raw_model.py
+datamodel-codegen --input ./ICAR-schema/bundled-schemes/combinedURLScheme.json --input-file-type openapi --output ./tmp/raw_model.py

@@ -2,6 +2,6 @@
 
 BASEDIR=$(dirname $0)
 cd "$BASEDIR"
-cd ../ICAR/scripts
+cd ../ICAR-schema/scripts
 chmod +x schema_bundle.sh
 ./schema_bundle.sh
