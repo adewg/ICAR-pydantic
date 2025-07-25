@@ -80,8 +80,10 @@ class CodeCleaner:
         if destination:
             return destination
 
-        if class_name.endswith("Array") or class_name.endswith("Event"):
+        if class_name.endswith("Event"):
             return self.resources_module
+        if class_name.endswith("Array") or class_name in {"BatchResults", "View"}:
+            return self.collections_module
         return self.others_module
 
     def map_files(self):
@@ -110,15 +112,8 @@ class CodeCleaner:
 
 
 if __name__ == "__main__":
-    for f in (
-        "../icar/wip.py",
-        "../icar/resources.py",
-        "../icar/types.py",
-        "../icar/enums.py",
-        "../icar/collections.py",
-        "../icar/others.py",
-    ):
-        if os.path.exists(f):
+    for f in glob.iglob("../icar/*.py"):
+        if os.path.exists(f) and not f.endswith("__init__.py"):
             os.remove(f)
     code_cleaner = CodeCleaner(
         input_file="../tmp/raw_model.py",

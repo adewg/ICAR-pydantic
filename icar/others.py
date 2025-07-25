@@ -3,42 +3,9 @@ from __future__ import annotations
 from enum import Enum
 from typing import List, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, Field
+from pydantic import BaseModel, Field
 
-from . import enums, resources, types
-
-
-class View(BaseModel):
-    totalItems: Optional[int] = Field(
-        None, description="Provides the number of items in the collection, if known."
-    )
-    totalPages: Optional[int] = Field(
-        None, description="Provides the number of pages in the collection, if known."
-    )
-    pageSize: Optional[int] = Field(
-        None,
-        description="If non-zero, specifies the default number of items returned per page.",
-    )
-    currentPage: Optional[int] = Field(
-        None,
-        description="Optionally identifies the current page for display purposes, if returned.",
-    )
-    first: Optional[AnyUrl] = Field(
-        None,
-        description="Link to the first page of the collection. Link relation: first.",
-    )
-    next: Optional[AnyUrl] = Field(
-        None,
-        description="Link to the next page of the collection, if any. Link relation: next.",
-    )
-    prev: Optional[AnyUrl] = Field(
-        None,
-        description="Link to the previous page of the collection, if any. Link relation: prev.",
-    )
-    last: Optional[AnyUrl] = Field(
-        None,
-        description="Link to the last page of the collection, if any. Link relation: last.",
-    )
+from . import enums, types
 
 
 class UnitCode(Enum):
@@ -165,10 +132,6 @@ class HeatReportNedapCowControl(BaseModel):
     heatChance: Optional[int] = Field(
         None, description="Gives an indication of the certainty of the heat indication."
     )
-
-
-class BatchResults(BaseModel):
-    __root__: List[resources.IcarBatchResult]
 
 
 class VisualDetection(BaseModel):

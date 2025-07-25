@@ -2,17 +2,50 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import AnyUrl, BaseModel, Field
 
-from . import others, resources
+from . import resources
 
 
 class IcarErrorCollection(BaseModel):
     errors: Optional[List[resources.IcarResponseMessageResource]] = None
 
 
+class View(BaseModel):
+    totalItems: Optional[int] = Field(
+        None, description="Provides the number of items in the collection, if known."
+    )
+    totalPages: Optional[int] = Field(
+        None, description="Provides the number of pages in the collection, if known."
+    )
+    pageSize: Optional[int] = Field(
+        None,
+        description="If non-zero, specifies the default number of items returned per page.",
+    )
+    currentPage: Optional[int] = Field(
+        None,
+        description="Optionally identifies the current page for display purposes, if returned.",
+    )
+    first: Optional[AnyUrl] = Field(
+        None,
+        description="Link to the first page of the collection. Link relation: first.",
+    )
+    next: Optional[AnyUrl] = Field(
+        None,
+        description="Link to the next page of the collection, if any. Link relation: next.",
+    )
+    prev: Optional[AnyUrl] = Field(
+        None,
+        description="Link to the previous page of the collection, if any. Link relation: prev.",
+    )
+    last: Optional[AnyUrl] = Field(
+        None,
+        description="Link to the last page of the collection, if any. Link relation: last.",
+    )
+
+
 class IcarResourceCollection(BaseModel):
-    view: Optional[others.View] = Field(
+    view: Optional[View] = Field(
         None, description="Information about the current view or page of the collection"
     )
 
@@ -24,11 +57,19 @@ class IcarAnimalSetCollection(IcarResourceCollection):
     )
 
 
+class IcarAnimalSetArray(BaseModel):
+    __root__: List[resources.IcarAnimalSetResource]
+
+
 class IcarAnimalSetJoinEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarAnimalSetJoinEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case animal set join events.",
     )
+
+
+class IcarAnimalSetJoinEventArray(BaseModel):
+    __root__: List[resources.IcarAnimalSetJoinEventResource]
 
 
 class IcarAnimalSetLeaveEventCollection(IcarResourceCollection):
@@ -38,11 +79,19 @@ class IcarAnimalSetLeaveEventCollection(IcarResourceCollection):
     )
 
 
+class IcarAnimalSetLeaveEventArray(BaseModel):
+    __root__: List[resources.IcarAnimalSetLeaveEventResource]
+
+
 class IcarDeviceCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarDeviceResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case weight events.",
     )
+
+
+class IcarDeviceArray(BaseModel):
+    __root__: List[resources.IcarDeviceResource]
 
 
 class IcarInventoryTransactionCollection(IcarResourceCollection):
@@ -52,11 +101,19 @@ class IcarInventoryTransactionCollection(IcarResourceCollection):
     )
 
 
+class IcarInventoryTransactionArray(BaseModel):
+    __root__: List[resources.IcarInventoryTransactionResource]
+
+
 class IcarRemarkEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarRemarkEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case remark events.",
     )
+
+
+class IcarRemarkEventArray(BaseModel):
+    __root__: List[resources.IcarRemarkEventResource]
 
 
 class IcarTestDayCollection(IcarResourceCollection):
@@ -66,11 +123,19 @@ class IcarTestDayCollection(IcarResourceCollection):
     )
 
 
+class IcarTestDayArray(BaseModel):
+    __root__: List[resources.IcarTestDayResource]
+
+
 class IcarLactationStatusObservedEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarLactationStatusObservedEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case lactation status events.",
     )
+
+
+class IcarLactationStatusObservedEventArray(BaseModel):
+    __root__: List[resources.IcarLactationStatusObservedEventResource]
 
 
 class IcarMilkingDryOffEventCollection(IcarResourceCollection):
@@ -80,11 +145,19 @@ class IcarMilkingDryOffEventCollection(IcarResourceCollection):
     )
 
 
+class IcarMilkingDryOffEventArray(BaseModel):
+    __root__: List[resources.IcarMilkingDryOffEventResource]
+
+
 class IcarReproAbortionEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarReproAbortionEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case abortion events.",
     )
+
+
+class IcarReproAbortionEventArray(BaseModel):
+    __root__: List[resources.IcarReproAbortionEventResource]
 
 
 class IcarReproDoNotBreedEventCollection(IcarResourceCollection):
@@ -94,11 +167,19 @@ class IcarReproDoNotBreedEventCollection(IcarResourceCollection):
     )
 
 
+class IcarReproDoNotBreedEventArray(BaseModel):
+    __root__: List[resources.IcarReproDoNotBreedEventResource]
+
+
 class IcarGestationCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarGestationResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case gestations.",
     )
+
+
+class IcarGestationArray(BaseModel):
+    __root__: List[resources.IcarGestationResource]
 
 
 class IcarReproStatusObservedEventCollection(IcarResourceCollection):
@@ -108,11 +189,23 @@ class IcarReproStatusObservedEventCollection(IcarResourceCollection):
     )
 
 
+class IcarReproStatusObservedEventArray(BaseModel):
+    __root__: List[resources.IcarReproStatusObservedEventResource]
+
+
+class BatchResults(BaseModel):
+    __root__: List[resources.IcarBatchResult]
+
+
 class IcarFeedCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarFeedResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case feeds.",
     )
+
+
+class IcarFeedArray(BaseModel):
+    __root__: List[resources.IcarFeedResource]
 
 
 class IcarRationCollection(IcarResourceCollection):
@@ -122,11 +215,19 @@ class IcarRationCollection(IcarResourceCollection):
     )
 
 
+class IcarRationArray(BaseModel):
+    __root__: List[resources.IcarRationResource]
+
+
 class IcarFeedIntakeEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarFeedIntakeEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case feed intakes.",
     )
+
+
+class IcarFeedIntakeEventArray(BaseModel):
+    __root__: List[resources.IcarFeedIntakeEventResource]
 
 
 class IcarFeedRecommendationCollection(IcarResourceCollection):
@@ -136,11 +237,19 @@ class IcarFeedRecommendationCollection(IcarResourceCollection):
     )
 
 
+class IcarFeedRecommendationArray(BaseModel):
+    __root__: List[resources.IcarFeedRecommendationResource]
+
+
 class IcarFeedStorageCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarFeedStorageResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case feed storage devices.",
     )
+
+
+class IcarFeedStorageArray(BaseModel):
+    __root__: List[resources.IcarFeedStorageResource]
 
 
 class IcarFeedReportCollection(IcarResourceCollection):
@@ -157,11 +266,19 @@ class IcarFeedTransactionCollection(IcarResourceCollection):
     )
 
 
+class IcarFeedTransactionArray(BaseModel):
+    __root__: List[resources.IcarFeedTransactionResource]
+
+
 class IcarGroupFeedingEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarGroupFeedingEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case group feeding events.",
     )
+
+
+class IcarGroupFeedingEventArray(BaseModel):
+    __root__: List[resources.IcarGroupFeedingEventResource]
 
 
 class IcarDiagnosisEventCollection(IcarResourceCollection):
@@ -171,6 +288,10 @@ class IcarDiagnosisEventCollection(IcarResourceCollection):
     )
 
 
+class IcarDiagnosisEventArray(BaseModel):
+    __root__: List[resources.IcarDiagnosisEventResource]
+
+
 class IcarTreatmentEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarTreatmentEventResource]] = Field(
         None,
@@ -178,10 +299,18 @@ class IcarTreatmentEventCollection(IcarResourceCollection):
     )
 
 
+class IcarTreatmentEventArray(BaseModel):
+    __root__: List[resources.IcarTreatmentEventResource]
+
+
 class IcarGroupTreatmentEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarGroupTreatmentEventResource]] = Field(
         None, description="Provides the array of objects, in this case weighing events."
     )
+
+
+class IcarGroupTreatmentEventArray(BaseModel):
+    __root__: List[resources.IcarGroupTreatmentEventResource]
 
 
 class IcarTreatmentProgramEventCollection(IcarResourceCollection):
@@ -191,11 +320,19 @@ class IcarTreatmentProgramEventCollection(IcarResourceCollection):
     )
 
 
+class IcarTreatmentProgramEventArray(BaseModel):
+    __root__: List[resources.IcarTreatmentProgramEventResource]
+
+
 class IcarHealthStatusObservedEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarHealthStatusObservedEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case lactation status events.",
     )
+
+
+class IcarHealthStatusObservedArray(BaseModel):
+    __root__: List[resources.IcarHealthStatusObservedEventResource]
 
 
 class IcarMedicineTransactionCollection(IcarResourceCollection):
@@ -205,11 +342,19 @@ class IcarMedicineTransactionCollection(IcarResourceCollection):
     )
 
 
+class IcarMedicineTransactionArray(BaseModel):
+    __root__: List[resources.IcarMedicineTransactionResource]
+
+
 class IcarAttentionEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarAttentionEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case attention events.",
     )
+
+
+class IcarAttentionEventArray(BaseModel):
+    __root__: List[resources.IcarAttentionEventResource]
 
 
 class IcarStatisticsCollection(IcarResourceCollection):
@@ -226,11 +371,19 @@ class IcarGroupPositionObservationEventCollection(IcarResourceCollection):
     )
 
 
+class IcarGroupPositionObservationEventArray(BaseModel):
+    __root__: List[resources.IcarGroupPositionObservationEventResource]
+
+
 class IcarPositionObservationEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarPositionObservationEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case position observation events.",
     )
+
+
+class IcarPositionObservationEventArray(BaseModel):
+    __root__: List[resources.IcarPositionObservationEventResource]
 
 
 class IcarObservationSummaryCollection(IcarResourceCollection):
@@ -240,6 +393,10 @@ class IcarObservationSummaryCollection(IcarResourceCollection):
     )
 
 
+class IcarObservationSummaryResourceArray(BaseModel):
+    __root__: List[resources.IcarObservationSummaryResource]
+
+
 class IcarMilkingVisitEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarMilkingVisitEventResource]] = Field(
         None,
@@ -247,11 +404,19 @@ class IcarMilkingVisitEventCollection(IcarResourceCollection):
     )
 
 
+class IcarMilkingVisitEventArray(BaseModel):
+    __root__: List[resources.IcarMilkingVisitEventResource]
+
+
 class IcarTestDayResultEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarTestDayResultEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case test day result events.",
     )
+
+
+class IcarTestDayResultEventArray(BaseModel):
+    __root__: List[resources.IcarTestDayResultEventResource]
 
 
 class IcarDailyMilkingAveragesCollection(IcarResourceCollection):
@@ -289,10 +454,18 @@ class IcarWeightEventCollection(IcarResourceCollection):
     )
 
 
+class IcarWeightEventArray(BaseModel):
+    __root__: List[resources.IcarWeightEventResource]
+
+
 class IcarGroupWeightEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarGroupWeightEventResource]] = Field(
         None, description="Provides the array of objects, in this case weighing events."
     )
+
+
+class IcarGroupWeightEventArray(BaseModel):
+    __root__: List[resources.IcarGroupWeightEventResource]
 
 
 class IcarBreedingValueCollection(IcarResourceCollection):
@@ -316,11 +489,51 @@ class IcarConformationScoreEventCollection(IcarResourceCollection):
     )
 
 
+class IcarConformationScoreEventArray(BaseModel):
+    __root__: List[resources.IcarConformationScoreEventResource]
+
+
 class IcarLocationCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarLocationResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case locations.",
     )
+
+
+class IcarAnimalCoreResourceArray(BaseModel):
+    __root__: List[resources.IcarAnimalCoreResource]
+
+
+class IcarMovementBirthEventArray(BaseModel):
+    __root__: List[resources.IcarMovementBirthEventResource]
+
+
+class IcarGroupMovementBirthEventArray(BaseModel):
+    __root__: List[resources.IcarGroupMovementBirthEventResource]
+
+
+class IcarMovementDeathEventArray(BaseModel):
+    __root__: List[resources.IcarMovementDeathEventResource]
+
+
+class IcarGroupMovementDeathEventArray(BaseModel):
+    __root__: List[resources.IcarGroupMovementDeathEventResource]
+
+
+class IcarMovementArrivalEventArray(BaseModel):
+    __root__: List[resources.IcarMovementArrivalEventResource]
+
+
+class IcarGroupMovementArrivalEventArray(BaseModel):
+    __root__: List[resources.IcarGroupMovementArrivalEventResource]
+
+
+class IcarMovementDepartureEventArray(BaseModel):
+    __root__: List[resources.IcarMovementDepartureEventResource]
+
+
+class IcarGroupMovementDepartureEventArray(BaseModel):
+    __root__: List[resources.IcarGroupMovementDepartureEventResource]
 
 
 class IcarReproPregnancyCheckEventCollection(IcarResourceCollection):
@@ -330,11 +543,19 @@ class IcarReproPregnancyCheckEventCollection(IcarResourceCollection):
     )
 
 
+class IcarReproPregnancyCheckEventArray(BaseModel):
+    __root__: List[resources.IcarReproPregnancyCheckEventResource]
+
+
 class IcarReproHeatEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarReproHeatEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case heat events.",
     )
+
+
+class IcarReproHeatEventArray(BaseModel):
+    __root__: List[resources.IcarReproHeatEventResource]
 
 
 class IcarReproInseminationEventCollection(IcarResourceCollection):
@@ -344,11 +565,19 @@ class IcarReproInseminationEventCollection(IcarResourceCollection):
     )
 
 
+class IcarReproInseminationEventArray(BaseModel):
+    __root__: List[resources.IcarReproInseminationEventResource]
+
+
 class IcarReproParturitionEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarReproParturitionEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case parturition events.",
     )
+
+
+class IcarReproParturitionEventArray(BaseModel):
+    __root__: List[resources.IcarReproParturitionEventResource]
 
 
 class IcarReproMatingRecommendationCollection(IcarResourceCollection):
@@ -358,11 +587,19 @@ class IcarReproMatingRecommendationCollection(IcarResourceCollection):
     )
 
 
+class IcarReproMatingRecommendationArray(BaseModel):
+    __root__: List[resources.IcarReproMatingRecommendationResource]
+
+
 class IcarReproEmbryoFlushingEventCollection(IcarResourceCollection):
     member: Optional[List[resources.IcarReproEmbryoFlushingEventResource]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, member provides the array of objects, in this case embryo flushing events.",
     )
+
+
+class IcarReproEmbryoFlushingEventArray(BaseModel):
+    __root__: List[resources.IcarReproEmbryoFlushingEventResource]
 
 
 class IcarAnimalSortingCommandCollection(IcarResourceCollection):
