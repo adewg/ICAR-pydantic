@@ -48,6 +48,7 @@ class CodeCleaner:
         self.types_module = self.project.root.create_file("icar/types.py")
         self.enums_module = self.project.root.create_file("icar/enums.py")
         self.collections_module = self.project.root.create_file("icar/collections.py")
+        self.shapes_module = self.project.root.create_file("icar/shapes.py")
         self.others_module = self.project.root.create_file("icar/others.py")
         self.module_map = {}
 
@@ -84,6 +85,24 @@ class CodeCleaner:
             return self.resources_module
         if class_name.endswith("Array") or class_name in {"BatchResults", "View"}:
             return self.collections_module
+
+        if class_name in {
+            "Coordinate",
+            "Type",
+            "Type1",
+            "Type2",
+            "Type3",
+            "Type4",
+            "Type5",
+            "Geometry",
+            "Geometry1",
+            "Geometry2",
+            "Geometry3",
+            "Geometry4",
+            "Geometry5",
+            "Geometry6",
+        }:
+            return self.shapes_module
         return self.others_module
 
     def map_files(self):
