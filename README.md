@@ -1,2 +1,21 @@
 # ICAR-pydantic
 Pydantic package that provides ICAR Animal Data Exchange data classes for Python
+
+
+# Installation
+
+Requires:
+- python
+- nodejs
+
+```bash
+pip install -r requirements.txt
+git clone git@github.com:adewg/ICAR.git
+```
+
+# Bundle
+
+```bash
+./scripts/schema_bundle.sh
+./scripts/generate_model.sh
+```
