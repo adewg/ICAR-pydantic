@@ -55,30 +55,6 @@ class PlanOrActual(Enum):
     Actual = "Actual"
 
 
-class IcarAnimalSetArray(BaseModel):
-    __root__: List[resources.IcarAnimalSetResource]
-
-
-class IcarAnimalSetJoinEventArray(BaseModel):
-    __root__: List[resources.IcarAnimalSetJoinEventResource]
-
-
-class IcarAnimalSetLeaveEventArray(BaseModel):
-    __root__: List[resources.IcarAnimalSetLeaveEventResource]
-
-
-class IcarDeviceArray(BaseModel):
-    __root__: List[resources.IcarDeviceResource]
-
-
-class IcarInventoryTransactionArray(BaseModel):
-    __root__: List[resources.IcarInventoryTransactionResource]
-
-
-class IcarRemarkEventArray(BaseModel):
-    __root__: List[resources.IcarRemarkEventResource]
-
-
 class Type(Enum):
     Point = "Point"
 
@@ -149,14 +125,6 @@ class Geometry(BaseModel):
     ] = Field(..., title="GeoJSON Geometry")
 
 
-class IcarTestDayArray(BaseModel):
-    __root__: List[resources.IcarTestDayResource]
-
-
-class IcarLactationStatusObservedEventArray(BaseModel):
-    __root__: List[resources.IcarLactationStatusObservedEventResource]
-
-
 class UnitCode2(Enum):
     KGM = "KGM"
 
@@ -199,198 +167,10 @@ class HeatReportNedapCowControl(BaseModel):
     )
 
 
-class IcarMilkingDryOffEventArray(BaseModel):
-    __root__: List[resources.IcarMilkingDryOffEventResource]
-
-
-class IcarReproAbortionEventArray(BaseModel):
-    __root__: List[resources.IcarReproAbortionEventResource]
-
-
-class IcarReproDoNotBreedEventArray(BaseModel):
-    __root__: List[resources.IcarReproDoNotBreedEventResource]
-
-
-class IcarGestationArray(BaseModel):
-    __root__: List[resources.IcarGestationResource]
-
-
-class IcarReproStatusObservedEventArray(BaseModel):
-    __root__: List[resources.IcarReproStatusObservedEventResource]
-
-
 class BatchResults(BaseModel):
     __root__: List[resources.IcarBatchResult]
-
-
-class IcarFeedArray(BaseModel):
-    __root__: List[resources.IcarFeedResource]
-
-
-class IcarRationArray(BaseModel):
-    __root__: List[resources.IcarRationResource]
-
-
-class IcarFeedIntakeEventArray(BaseModel):
-    __root__: List[resources.IcarFeedIntakeEventResource]
-
-
-class IcarFeedRecommendationArray(BaseModel):
-    __root__: List[resources.IcarFeedRecommendationResource]
-
-
-class IcarFeedStorageArray(BaseModel):
-    __root__: List[resources.IcarFeedStorageResource]
-
-
-class IcarFeedTransactionArray(BaseModel):
-    __root__: List[resources.IcarFeedTransactionResource]
-
-
-class IcarGroupFeedingEventArray(BaseModel):
-    __root__: List[resources.IcarGroupFeedingEventResource]
-
-
-class IcarDiagnosisEvent(BaseModel):
-    __root__: resources.IcarDiagnosisEventResource
-
-
-class IcarDiagnosisEventArray(BaseModel):
-    __root__: List[resources.IcarDiagnosisEventResource]
-
-
-class IcarTreatmentEvent(BaseModel):
-    __root__: resources.IcarTreatmentEventResource
-
-
-class IcarTreatmentEventArray(BaseModel):
-    __root__: List[resources.IcarTreatmentEventResource]
-
-
-class IcarGroupTreatmentEvent(BaseModel):
-    __root__: resources.IcarGroupTreatmentEventResource
-
-
-class IcarGroupTreatmentEventArray(BaseModel):
-    __root__: List[resources.IcarGroupTreatmentEventResource]
-
-
-class IcarTreatmentProgramEvent(BaseModel):
-    __root__: resources.IcarTreatmentProgramEventResource
-
-
-class IcarTreatmentProgramEventArray(BaseModel):
-    __root__: List[resources.IcarTreatmentProgramEventResource]
-
-
-class IcarHealthStatusObservedEvent(BaseModel):
-    __root__: resources.IcarHealthStatusObservedEventResource
-
-
-class IcarHealthStatusObservedArray(BaseModel):
-    __root__: List[resources.IcarHealthStatusObservedEventResource]
-
-
-class IcarMedicineTransactionArray(BaseModel):
-    __root__: List[resources.IcarMedicineTransactionResource]
-
-
-class IcarAttentionEventArray(BaseModel):
-    __root__: List[resources.IcarAttentionEventResource]
-
-
-class IcarGroupPositionObservationEventArray(BaseModel):
-    __root__: List[resources.IcarGroupPositionObservationEventResource]
-
-
-class IcarPositionObservationEventArray(BaseModel):
-    __root__: List[resources.IcarPositionObservationEventResource]
-
-
-class IcarObservationSummaryResourceArray(BaseModel):
-    __root__: List[resources.IcarObservationSummaryResource]
-
-
-class IcarMilkingVisitEventArray(BaseModel):
-    __root__: List[resources.IcarMilkingVisitEventResource]
-
-
-class IcarTestDayResultEventArray(BaseModel):
-    __root__: List[resources.IcarTestDayResultEventResource]
-
-
-class IcarWeightEventArray(BaseModel):
-    __root__: List[resources.IcarWeightEventResource]
-
-
-class IcarGroupWeightEventArray(BaseModel):
-    __root__: List[resources.IcarGroupWeightEventResource]
-
-
-class IcarConformationScoreEventArray(BaseModel):
-    __root__: List[resources.IcarConformationScoreEventResource]
-
-
-class IcarAnimalCoreResourceArray(BaseModel):
-    __root__: List[resources.IcarAnimalCoreResource]
-
-
-class IcarMovementBirthEventArray(BaseModel):
-    __root__: List[resources.IcarMovementBirthEventResource]
-
-
-class IcarGroupMovementBirthEventArray(BaseModel):
-    __root__: List[resources.IcarGroupMovementBirthEventResource]
-
-
-class IcarMovementDeathEventArray(BaseModel):
-    __root__: List[resources.IcarMovementDeathEventResource]
-
-
-class IcarGroupMovementDeathEventArray(BaseModel):
-    __root__: List[resources.IcarGroupMovementDeathEventResource]
-
-
-class IcarMovementArrivalEventArray(BaseModel):
-    __root__: List[resources.IcarMovementArrivalEventResource]
-
-
-class IcarGroupMovementArrivalEventArray(BaseModel):
-    __root__: List[resources.IcarGroupMovementArrivalEventResource]
-
-
-class IcarMovementDepartureEventArray(BaseModel):
-    __root__: List[resources.IcarMovementDepartureEventResource]
-
-
-class IcarGroupMovementDepartureEventArray(BaseModel):
-    __root__: List[resources.IcarGroupMovementDepartureEventResource]
-
-
-class IcarReproPregnancyCheckEventArray(BaseModel):
-    __root__: List[resources.IcarReproPregnancyCheckEventResource]
 
 
 class VisualDetection(BaseModel):
     heatSigns: Optional[List[enums.IcarReproHeatSignType]] = None
     heatIntensity: Optional[enums.IcarReproHeatIntensityType] = None
-
-
-class IcarReproHeatEventArray(BaseModel):
-    __root__: List[resources.IcarReproHeatEventResource]
-
-
-class IcarReproInseminationEventArray(BaseModel):
-    __root__: List[resources.IcarReproInseminationEventResource]
-
-
-class IcarReproParturitionEventArray(BaseModel):
-    __root__: List[resources.IcarReproParturitionEventResource]
-
-
-class IcarReproMatingRecommendationArray(BaseModel):
-    __root__: List[resources.IcarReproMatingRecommendationResource]
-
-
-class IcarReproEmbryoFlushingEventArray(BaseModel):
-    __root__: List[resources.IcarReproEmbryoFlushingEventResource]

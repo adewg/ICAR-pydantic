@@ -62,8 +62,8 @@ class CodeCleaner:
                 break
             index = index + len(lookup)
             class_name = data[index:].split("(", 1)[0]
-            print(class_name)
-            destination = self.module_map.get(class_name) or self.others_module
+            destination = self.get_destination_module(class_name)
+            print(f"{class_name} --> {destination.name}")
             mover = create_move(
                 self.project,
                 self.wip,
@@ -73,6 +73,16 @@ class CodeCleaner:
 
         self.close()
         self.convert_to_relative_imports()
+
+    def get_destination_module(self, class_name):
+        destination = self.module_map.get(class_name)
+
+        if destination:
+            return destination
+
+        if class_name.endswith("Array") or class_name.endswith("Event"):
+            return self.resources_module
+        return self.others_module
 
     def map_files(self):
         self.map_modules(self.enums_module, self.enums_files)

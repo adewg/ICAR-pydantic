@@ -273,11 +273,19 @@ class IcarHealthStatusObservedEventResource(IcarAnimalEventCoreResource):
     )
 
 
+class IcarAnimalSetArray(BaseModel):
+    __root__: List[IcarAnimalSetResource]
+
+
 class IcarAnimalSetJoinEventResource(IcarAnimalEventCoreResource):
     animalSetId: str = Field(
         ...,
         description="Unique identifier in the source system for the animal set to be joined.",
     )
+
+
+class IcarAnimalSetJoinEventArray(BaseModel):
+    __root__: List[IcarAnimalSetJoinEventResource]
 
 
 class IcarAnimalSetLeaveEventResource(IcarAnimalEventCoreResource):
@@ -287,10 +295,22 @@ class IcarAnimalSetLeaveEventResource(IcarAnimalEventCoreResource):
     )
 
 
+class IcarAnimalSetLeaveEventArray(BaseModel):
+    __root__: List[IcarAnimalSetLeaveEventResource]
+
+
+class IcarDeviceArray(BaseModel):
+    __root__: List[IcarDeviceResource]
+
+
 class IcarInventoryTransactionResource(types.IcarInventoryTransactionType):
     product: types.IcarProductReferenceType = Field(
         ..., description="The product in this inventory transaction."
     )
+
+
+class IcarInventoryTransactionArray(BaseModel):
+    __root__: List[IcarInventoryTransactionResource]
 
 
 class IcarRemarkEventResource(IcarAnimalEventCoreResource):
@@ -298,6 +318,10 @@ class IcarRemarkEventResource(IcarAnimalEventCoreResource):
         None,
         description="Unstructured, human-readable note or remark about the animal.\nConsider using `responsible` to identify the person who recorded it.",
     )
+
+
+class IcarRemarkEventArray(BaseModel):
+    __root__: List[IcarRemarkEventResource]
 
 
 class IcarStatisticsResource(IcarResource):
@@ -335,10 +359,18 @@ class IcarTestDayResource(IcarResource):
     )
 
 
+class IcarTestDayArray(BaseModel):
+    __root__: List[IcarTestDayResource]
+
+
 class IcarLactationStatusObservedEventResource(IcarAnimalEventCoreResource):
     observedStatus: Optional[enums.IcarAnimalLactationStatusType] = Field(
         None, description="The lactation status at the time of observation."
     )
+
+
+class IcarLactationStatusObservedEventArray(BaseModel):
+    __root__: List[IcarLactationStatusObservedEventResource]
 
 
 class IcarDailyMilkingAveragesResource(IcarResource):
@@ -461,8 +493,16 @@ class IcarMilkingDryOffEventResource(IcarAnimalEventCoreResource):
     pass
 
 
+class IcarMilkingDryOffEventArray(BaseModel):
+    __root__: List[IcarMilkingDryOffEventResource]
+
+
 class IcarReproAbortionEventResource(IcarAnimalEventCoreResource):
     pass
+
+
+class IcarReproAbortionEventArray(BaseModel):
+    __root__: List[IcarReproAbortionEventResource]
 
 
 class IcarReproDoNotBreedEventResource(IcarAnimalEventCoreResource):
@@ -473,6 +513,10 @@ class IcarReproDoNotBreedEventResource(IcarAnimalEventCoreResource):
     extendedReasons: Optional[List[types.IcarReasonIdentifierType]] = Field(
         None, description="Extended reason codes why this animal should not be bred."
     )
+
+
+class IcarReproDoNotBreedEventArray(BaseModel):
+    __root__: List[IcarReproDoNotBreedEventResource]
 
 
 class IcarGestationResource(IcarResource):
@@ -493,10 +537,18 @@ class IcarGestationResource(IcarResource):
     )
 
 
+class IcarGestationArray(BaseModel):
+    __root__: List[IcarGestationResource]
+
+
 class IcarReproStatusObservedEventResource(IcarAnimalEventCoreResource):
     observedStatus: Optional[enums.IcarAnimalReproductionStatusType] = Field(
         None, description="The reproductive status at the time of observation."
     )
+
+
+class IcarReproStatusObservedEventArray(BaseModel):
+    __root__: List[IcarReproStatusObservedEventResource]
 
 
 class IcarReproSemenStrawResource(IcarResource):
@@ -652,6 +704,10 @@ class IcarFeedResource(IcarResource):
     )
 
 
+class IcarFeedArray(BaseModel):
+    __root__: List[IcarFeedResource]
+
+
 class IcarRationResource(IcarResource):
     id: types.IcarRationIdType = Field(
         ..., description="Unique identifier in the source system for this resource."
@@ -664,6 +720,10 @@ class IcarRationResource(IcarResource):
         None,
         description="indicates whether the ration is or was available on the location.",
     )
+
+
+class IcarRationArray(BaseModel):
+    __root__: List[IcarRationResource]
 
 
 class IcarFeedIntakeEventResource(IcarAnimalEventCoreResource):
@@ -679,6 +739,10 @@ class IcarFeedIntakeEventResource(IcarAnimalEventCoreResource):
     device: Optional[types.IcarDeviceReferenceType] = Field(
         None, description="Optional information about the device used for the feeding."
     )
+
+
+class IcarFeedIntakeEventArray(BaseModel):
+    __root__: List[IcarFeedIntakeEventResource]
 
 
 class IcarFeedRecommendationResource(IcarResource):
@@ -706,6 +770,10 @@ class IcarFeedRecommendationResource(IcarResource):
     recommendedRation: Optional[List[types.IcarRecommendedRationType]] = None
 
 
+class IcarFeedRecommendationArray(BaseModel):
+    __root__: List[IcarFeedRecommendationResource]
+
+
 class IcarFeedStorageResource(IcarDeviceResource):
     feedId: Optional[str] = Field(
         None, description="Unique identifier of the feed that is stored in this device."
@@ -723,10 +791,18 @@ class IcarFeedStorageResource(IcarDeviceResource):
     )
 
 
+class IcarFeedStorageArray(BaseModel):
+    __root__: List[IcarFeedStorageResource]
+
+
 class IcarFeedTransactionResource(types.IcarInventoryTransactionType):
     product: types.IcarFeedReferenceType = Field(
         ..., description="The feed product in this transaction."
     )
+
+
+class IcarFeedTransactionArray(BaseModel):
+    __root__: List[IcarFeedTransactionResource]
 
 
 class IcarGroupFeedingEventResource(IcarGroupEventCoreResource):
@@ -750,10 +826,58 @@ class IcarGroupFeedingEventResource(IcarGroupEventCoreResource):
     )
 
 
+class IcarGroupFeedingEventArray(BaseModel):
+    __root__: List[IcarGroupFeedingEventResource]
+
+
+class IcarDiagnosisEvent(BaseModel):
+    __root__: IcarDiagnosisEventResource
+
+
+class IcarDiagnosisEventArray(BaseModel):
+    __root__: List[IcarDiagnosisEventResource]
+
+
+class IcarTreatmentEvent(BaseModel):
+    __root__: IcarTreatmentEventResource
+
+
+class IcarTreatmentEventArray(BaseModel):
+    __root__: List[IcarTreatmentEventResource]
+
+
+class IcarGroupTreatmentEvent(BaseModel):
+    __root__: IcarGroupTreatmentEventResource
+
+
+class IcarGroupTreatmentEventArray(BaseModel):
+    __root__: List[IcarGroupTreatmentEventResource]
+
+
+class IcarTreatmentProgramEvent(BaseModel):
+    __root__: IcarTreatmentProgramEventResource
+
+
+class IcarTreatmentProgramEventArray(BaseModel):
+    __root__: List[IcarTreatmentProgramEventResource]
+
+
+class IcarHealthStatusObservedEvent(BaseModel):
+    __root__: IcarHealthStatusObservedEventResource
+
+
+class IcarHealthStatusObservedArray(BaseModel):
+    __root__: List[IcarHealthStatusObservedEventResource]
+
+
 class IcarMedicineTransactionResource(types.IcarInventoryTransactionType):
     product: types.IcarMedicineReferenceType = Field(
         ..., description="The medicine product in this transaction."
     )
+
+
+class IcarMedicineTransactionArray(BaseModel):
+    __root__: List[IcarMedicineTransactionResource]
 
 
 class IcarAttentionEventResource(IcarAnimalEventCoreResource):
@@ -784,16 +908,28 @@ class IcarAttentionEventResource(IcarAnimalEventCoreResource):
     )
 
 
+class IcarAttentionEventArray(BaseModel):
+    __root__: List[IcarAttentionEventResource]
+
+
 class IcarGroupPositionObservationEventResource(
     IcarGroupEventCoreResource, types.IcarPositionObservationType
 ):
     pass
 
 
+class IcarGroupPositionObservationEventArray(BaseModel):
+    __root__: List[IcarGroupPositionObservationEventResource]
+
+
 class IcarPositionObservationEventResource(
     IcarAnimalEventCoreResource, types.IcarPositionObservationType
 ):
     pass
+
+
+class IcarPositionObservationEventArray(BaseModel):
+    __root__: List[IcarPositionObservationEventResource]
 
 
 class IcarObservationSummaryResource(IcarResource):
@@ -804,6 +940,10 @@ class IcarObservationSummaryResource(IcarResource):
         None,
         description="The summary statistics for this animal. Likely to be summarised on demand based on query parameters.",
     )
+
+
+class IcarObservationSummaryResourceArray(BaseModel):
+    __root__: List[IcarObservationSummaryResource]
 
 
 class IcarMilkingVisitEventResource(IcarAnimalEventCoreResource):
@@ -860,11 +1000,19 @@ class IcarMilkingVisitEventResource(IcarAnimalEventCoreResource):
     milkingRemarks: Optional[List[enums.IcarMilkingRemarksType]] = None
 
 
+class IcarMilkingVisitEventArray(BaseModel):
+    __root__: List[IcarMilkingVisitEventResource]
+
+
 class IcarTestDayResultEventResource(IcarAnimalEventCoreResource):
     milkWeight24Hours: Optional[types.IcarMilkingMilkWeightType] = None
     testDayCode: Optional[enums.IcarTestDayCodeType] = None
     milkCharacteristics: Optional[List[types.IcarMilkCharacteristicsType]] = None
     predictedProductionOnTestDay: Optional[types.IcarMilkingPredictionType] = None
+
+
+class IcarTestDayResultEventArray(BaseModel):
+    __root__: List[IcarTestDayResultEventResource]
 
 
 class IcarWeightEventResource(IcarAnimalEventCoreResource):
@@ -879,6 +1027,10 @@ class IcarWeightEventResource(IcarAnimalEventCoreResource):
         None,
         description="Hours of curfew or withholding feed prior to weighing to standardise gut fill.",
     )
+
+
+class IcarWeightEventArray(BaseModel):
+    __root__: List[IcarWeightEventResource]
 
 
 class IcarGroupWeightEventResource(IcarGroupEventCoreResource):
@@ -912,6 +1064,10 @@ class IcarGroupWeightEventResource(IcarGroupEventCoreResource):
     )
 
 
+class IcarGroupWeightEventArray(BaseModel):
+    __root__: List[IcarGroupWeightEventResource]
+
+
 class IcarTypeClassificationEventResource(IcarAnimalEventCoreResource):
     conformationScores: Optional[List[types.IcarConformationScoreType]] = None
 
@@ -920,6 +1076,10 @@ class IcarConformationScoreEventResource(
     IcarAnimalEventCoreResource, types.IcarConformationScoreType
 ):
     pass
+
+
+class IcarConformationScoreEventArray(BaseModel):
+    __root__: List[IcarConformationScoreEventResource]
 
 
 class IcarAnimalCoreResource(IcarResource):
@@ -1117,6 +1277,42 @@ class IcarGroupMovementDepartureEventResource(IcarGroupEventCoreResource):
     )
 
 
+class IcarAnimalCoreResourceArray(BaseModel):
+    __root__: List[IcarAnimalCoreResource]
+
+
+class IcarMovementBirthEventArray(BaseModel):
+    __root__: List[IcarMovementBirthEventResource]
+
+
+class IcarGroupMovementBirthEventArray(BaseModel):
+    __root__: List[IcarGroupMovementBirthEventResource]
+
+
+class IcarMovementDeathEventArray(BaseModel):
+    __root__: List[IcarMovementDeathEventResource]
+
+
+class IcarGroupMovementDeathEventArray(BaseModel):
+    __root__: List[IcarGroupMovementDeathEventResource]
+
+
+class IcarMovementArrivalEventArray(BaseModel):
+    __root__: List[IcarMovementArrivalEventResource]
+
+
+class IcarGroupMovementArrivalEventArray(BaseModel):
+    __root__: List[IcarGroupMovementArrivalEventResource]
+
+
+class IcarMovementDepartureEventArray(BaseModel):
+    __root__: List[IcarMovementDepartureEventResource]
+
+
+class IcarGroupMovementDepartureEventArray(BaseModel):
+    __root__: List[IcarGroupMovementDepartureEventResource]
+
+
 class IcarReproPregnancyCheckEventResource(IcarAnimalEventCoreResource):
     method: Optional[enums.IcarReproPregnancyMethodType] = Field(
         None, description="Method by which diagnosis was carried out."
@@ -1141,6 +1337,10 @@ class IcarReproPregnancyCheckEventResource(IcarAnimalEventCoreResource):
     exceptions: Optional[List[str]] = Field(
         None, description="Additional local observations - such as ABNORMAL CALF"
     )
+
+
+class IcarReproPregnancyCheckEventArray(BaseModel):
+    __root__: List[IcarReproPregnancyCheckEventResource]
 
 
 class IcarReproHeatEventResource(IcarAnimalEventCoreResource):
@@ -1176,6 +1376,10 @@ class IcarReproHeatEventResource(IcarAnimalEventCoreResource):
         None,
         description="Optional information about the device used for the measurement.",
     )
+
+
+class IcarReproHeatEventArray(BaseModel):
+    __root__: List[IcarReproHeatEventResource]
 
 
 class IcarReproInseminationEventResource(IcarAnimalEventCoreResource):
@@ -1217,6 +1421,10 @@ class IcarReproInseminationEventResource(IcarAnimalEventCoreResource):
     )
 
 
+class IcarReproInseminationEventArray(BaseModel):
+    __root__: List[IcarReproInseminationEventResource]
+
+
 class IcarReproParturitionEventResource(IcarAnimalEventCoreResource):
     isEmbryoImplant: Optional[bool] = Field(
         None, description="True if the progeny is the result of an embryo implant."
@@ -1245,8 +1453,16 @@ class IcarReproParturitionEventResource(IcarAnimalEventCoreResource):
     )
 
 
+class IcarReproParturitionEventArray(BaseModel):
+    __root__: List[IcarReproParturitionEventResource]
+
+
 class IcarReproMatingRecommendationResource(IcarAnimalEventCoreResource):
     sireRecommendations: Optional[List[types.IcarSireRecommendationType]] = None
+
+
+class IcarReproMatingRecommendationArray(BaseModel):
+    __root__: List[IcarReproMatingRecommendationResource]
 
 
 class IcarReproEmbryoFlushingEventResource(IcarEventCoreResource):
@@ -1257,3 +1473,7 @@ class IcarReproEmbryoFlushingEventResource(IcarEventCoreResource):
     collectionCentre: Optional[str] = Field(
         None, description="The location where the embryo was flushed."
     )
+
+
+class IcarReproEmbryoFlushingEventArray(BaseModel):
+    __root__: List[IcarReproEmbryoFlushingEventResource]
