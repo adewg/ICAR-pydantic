@@ -18,5 +18,6 @@ pre-commit install
 
 ```bash
 ./scripts/schema_bundle.sh
-./scripts/generate_model.sh
+./scripts/generate_models.sh
+./scripts/generate_modules.sh
 ```
