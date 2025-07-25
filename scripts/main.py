@@ -23,7 +23,7 @@ class CodeCleaner:
         with open(specifications, "r") as file:
             self.json_data = json.loads(file.read())
         self.specifications = specifications
-        self.project = Project("..")
+        self.project = Project("..", ropefolder=None)
         self.types_files = [
             f for f in listdir(types_folder) if isfile(join(types_folder, f))
         ]
