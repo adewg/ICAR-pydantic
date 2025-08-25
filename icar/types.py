@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from pydantic import AnyUrl, BaseModel, Field, confloat, constr
 
-from . import enums, others, resources, shapes
+from . import enums, geojson, others, resources
 
 
 class IcarDateTimeType(BaseModel):
@@ -586,7 +586,7 @@ class IcarPositionObservationType(BaseModel):
         None,
         description="Identifier for a sorting site (icarSortingSiteResource) for this position.",
     )
-    geometry: Optional[shapes.Geometry] = Field(
+    geometry: Optional[geojson.Geometry] = Field(
         None,
         description="A GeoJSON geometry (such as a latitude/longitude point) that specifies the position.",
     )
