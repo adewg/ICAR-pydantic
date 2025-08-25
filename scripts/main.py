@@ -48,7 +48,7 @@ class CodeCleaner:
         self.types_module = self.project.root.create_file("icar/types.py")
         self.enums_module = self.project.root.create_file("icar/enums.py")
         self.collections_module = self.project.root.create_file("icar/collections.py")
-        self.shapes_module = self.project.root.create_file("icar/shapes.py")
+        self.geojson_module = self.project.root.create_file("icar/geojson.py")
         self.others_module = self.project.root.create_file("icar/others.py")
         self.module_map = {}
 
@@ -102,7 +102,7 @@ class CodeCleaner:
             "Geometry5",
             "Geometry6",
         }:
-            return self.shapes_module
+            return self.geojson_module
         return self.others_module
 
     def map_files(self):
