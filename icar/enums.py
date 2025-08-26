@@ -6,7 +6,7 @@ from enum import Enum
 class IcarBatchResultSeverityType(Enum):
     Information = "Information"
     Warning = "Warning"
-    Error = "Errors"
+    Error = "Error"
 
 
 class IcarFeedCategoryType(Enum):
