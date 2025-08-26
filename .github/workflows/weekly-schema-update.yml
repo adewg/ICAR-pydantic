@@ -50,14 +50,32 @@ jobs:
           git clone https://github.com/adewg/ICAR.git ICAR-schema
         fi
 
+        # Verify the structure
+        echo "ICAR schema directory structure:"
+        ls -la ICAR-schema/
+        echo "ICAR scripts directory:"
+        ls -la ICAR-schema/scripts/ || echo "Scripts directory not found"
+
+    - name: Debug working directory
+      run: |
+        echo "Current working directory: $(pwd)"
+        echo "Project structure:"
+        ls -la
+        echo "Scripts directory:"
+        ls -la scripts/
+
     - name: Make scripts executable
       run: |
         chmod +x scripts/*.sh
         chmod +x scripts/main.py
+        if [ -f "ICAR-schema/scripts/schema_bundle.sh" ]; then
+          chmod +x ICAR-schema/scripts/schema_bundle.sh
+        fi
 
     - name: Run schema bundle
       run: |
         echo "Running schema bundle..."
+        echo "Working directory: $(pwd)"
         ./scripts/schema_bundle.sh
 
     - name: Run model generation
