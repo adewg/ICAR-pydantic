@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Get the script directory and project root
 SCRIPT_DIR=$(dirname "$0")
@@ -28,4 +28,6 @@ chmod +x "$ICAR_SCRIPTS_DIR/schema_bundle.sh"
 # Change to the ICAR scripts directory and run the bundle script
 cd "$ICAR_SCRIPTS_DIR"
 echo "Running schema bundle from: $(pwd)"
-./schema_bundle.sh
+
+# Run with bash to ensure compatibility
+bash ./schema_bundle.sh

@@ -30,7 +30,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '22'
 
     - name: Install Python dependencies
       run: |
@@ -64,6 +64,12 @@ jobs:
         echo "Scripts directory:"
         ls -la scripts/
 
+    - name: Verify Node.js and npm installation
+      run: |
+        echo "Node.js version: $(node --version)"
+        echo "npm version: $(npm --version)"
+        echo "npm location: $(which npm)"
+        echo "PATH: $PATH"
     - name: Make scripts executable
       run: |
         chmod +x scripts/*.sh
@@ -74,9 +80,10 @@ jobs:
 
     - name: Run schema bundle
       run: |
+        shell: bash
         echo "Running schema bundle..."
         echo "Working directory: $(pwd)"
-        ./scripts/schema_bundle.sh
+        bash ./scripts/schema_bundle.sh
 
     - name: Run model generation
       run: |
