@@ -47,7 +47,7 @@ jobs:
           cd ..
         else
           echo "Cloning ICAR schema..."
-          git clone https://github.com/adewg/ICAR.git ICAR-schema
+          git clone -b Develop https://github.com/adewg/ICAR.git ICAR-schema
         fi
 
         # Verify the structure
