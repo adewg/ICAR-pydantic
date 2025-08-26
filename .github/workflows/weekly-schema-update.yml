@@ -80,20 +80,22 @@ jobs:
 
     - name: Run schema bundle
       run: |
-        shell: bash
         echo "Running schema bundle..."
         echo "Working directory: $(pwd)"
         bash ./scripts/schema_bundle.sh
+      shell: bash
 
     - name: Run model generation
       run: |
         echo "Running model generation..."
         ./scripts/generate_models.sh
+      shell: bash
 
     - name: Run module generation
       run: |
         echo "Running module generation..."
         ./scripts/generate_modules.sh
+      shell: bash
 
     - name: Check for changes
       id: verify-changed-files
