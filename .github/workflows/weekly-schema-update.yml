@@ -1,6 +1,7 @@
 name: Weekly ICAR Schema Update
 
 on:
+  push:
   schedule:
     # Run every Sunday at 2 AM UTC
     - cron: '0 2 * * 0'
