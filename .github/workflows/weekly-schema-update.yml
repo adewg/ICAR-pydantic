@@ -11,6 +11,8 @@ permissions:
   contents: write
   pull-requests: write
 
+env:
+  ICAR_BRANCH: Develop
 jobs:
   update-schema:
     runs-on: ubuntu-latest
@@ -43,11 +45,11 @@ jobs:
           echo "Updating existing ICAR schema..."
           cd ICAR-schema
           git fetch origin
-          git reset --hard origin/main
+          git reset --hard origin/${{ env.ICAR_BRANCH }}
           cd ..
         else
           echo "Cloning ICAR schema..."
-          git clone -b Develop https://github.com/adewg/ICAR.git ICAR-schema
+          git clone -b ${{ env.ICAR_BRANCH }} https://github.com/adewg/ICAR.git ICAR-schema
         fi
 
         # Verify the structure
@@ -55,14 +57,6 @@ jobs:
         ls -la ICAR-schema/
         echo "ICAR scripts directory:"
         ls -la ICAR-schema/scripts/ || echo "Scripts directory not found"
-
-    - name: Debug working directory
-      run: |
-        echo "Current working directory: $(pwd)"
-        echo "Project structure:"
-        ls -la
-        echo "Scripts directory:"
-        ls -la scripts/
 
     - name: Verify Node.js and npm installation
       run: |
@@ -133,7 +127,7 @@ jobs:
           This PR contains the latest changes from the ICAR schema repository.
 
           ### Changes Made
-          - Updated ICAR schema from upstream repository
+          - Updated ICAR schema from upstream repository (${{ env.ICAR_BRANCH }} branch)
           - Regenerated Pydantic models using latest schema
           - Applied code formatting and linting
 
