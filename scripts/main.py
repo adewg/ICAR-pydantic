@@ -26,14 +26,14 @@ GEOJSON_CLASSES = {
     "Geometry6",
 }
 
-RESOURCES_CLASSES = {
+EXTRA_RESOURCES_CLASSES = {
     "SupportedMessage",
     "HeatReportNedapCowControl",
     "HeatReportScrSenseTime",
     "VisualDetection",
 }
 
-ENUMS_CLASSES = {
+EXTRA_ENUMS_CLASSES = {
     "UnitCode",
     "UnitCode2",
     "UnitCode3",
@@ -41,7 +41,7 @@ ENUMS_CLASSES = {
     "IcarQuarterId",
 }
 
-TYPES_CLASSES = {
+EXTRA_TYPES_CLASSES = {
     "Fraction",
 }
 
@@ -126,11 +126,11 @@ class CodeCleaner:
 
         if class_name in GEOJSON_CLASSES:
             return self.geojson_module
-        if class_name in TYPES_CLASSES:
+        if class_name in EXTRA_TYPES_CLASSES:
             return self.types_module
-        if class_name in ENUMS_CLASSES:
+        if class_name in EXTRA_ENUMS_CLASSES:
             return self.enums_module
-        if class_name in RESOURCES_CLASSES:
+        if class_name in EXTRA_RESOURCES_CLASSES:
             return self.resources_module
 
         raise ValueError(f"Cannot find destination for class {class_name}")
