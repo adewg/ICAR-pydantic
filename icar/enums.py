@@ -4,12 +4,20 @@ from enum import Enum
 
 
 class IcarBatchResultSeverityType(Enum):
+    """
+    Severity code to distinguish warnings and errors.
+    """
+
     Information = "Information"
     Warning = "Warning"
     Error = "Error"
 
 
 class IcarFeedCategoryType(Enum):
+    """
+    Enumeration for feed categories. Each category can have more detail in a type specification.
+    """
+
     Concentrate = "Concentrate"
     Roughage = "Roughage"
     Additives = "Additives"
@@ -17,6 +25,11 @@ class IcarFeedCategoryType(Enum):
 
 
 class UncefactMassUnitsType(Enum):
+    """
+    Mass units for weight from UN/CEFACT trade facilitation recommendation 20.
+     Kilogram, Gram, Pound, Metric Tonne, Microgram, Miligram, Ounce, Pound net.
+    """
+
     KGM = "KGM"
     GRM = "GRM"
     LBR = "LBR"
@@ -28,11 +41,28 @@ class UncefactMassUnitsType(Enum):
 
 
 class IcarMethodType(Enum):
+    """
+    Enumeration for the method with which a value was determined.
+    """
+
     Analyzed = "Analyzed"
     Derived = "Derived"
 
 
+class UnitCode(Enum):
+    """
+    UN/CEFACT Common Code for Units of Measurement.
+    """
+
+    SEC = "SEC"
+    MIN = "MIN"
+
+
 class IcarMessageType(Enum):
+    """
+    Enumeration of the ICAR messages. These can be used to identify supported capabilities or functions.
+    """
+
     MilkingVisits = "MilkingVisits"
     TestDayResults = "TestDayResults"
     Births = "Births"
@@ -87,6 +117,10 @@ class IcarMessageType(Enum):
 
 
 class IcarInventoryTransactionKindType(Enum):
+    """
+    Defines the kinds of inventory transaction, which can represent items received, disposed of (including sale or destruction), used, counted in a stocktake or calculated on hand.
+    """
+
     Receipt = "Receipt"
     Disposal = "Disposal"
     OnHand = "OnHand"
@@ -96,6 +130,10 @@ class IcarInventoryTransactionKindType(Enum):
 
 
 class IcarProductFamilyType(Enum):
+    """
+    Defines the families of products
+    """
+
     Animal_Feeds = "Animal Feeds"
     Animal_Reproductive_Products = "Animal Reproductive Products"
     Veterinary_Supplies = "Veterinary Supplies"
@@ -111,6 +149,10 @@ class IcarProductFamilyType(Enum):
 
 
 class IcarGroupEventMethodType(Enum):
+    """
+    Defines how the set of animals in a group event is defined.
+    """
+
     ExistingAnimalSet = "ExistingAnimalSet"
     EmbeddedAnimalSet = "EmbeddedAnimalSet"
     InventoryClassification = "InventoryClassification"
@@ -120,6 +162,10 @@ class IcarGroupEventMethodType(Enum):
 
 
 class IcarAnimalSpecieType(Enum):
+    """
+    Enumeration for species of animal using English names. Previous ADE definitions used a mixture of English and Genus names.
+    """
+
     Buffalo = "Buffalo"
     Cattle = "Cattle"
     Deer = "Deer"
@@ -131,6 +177,10 @@ class IcarAnimalSpecieType(Enum):
 
 
 class IcarAnimalGenderType(Enum):
+    """
+    Enumeration for sex of animal using species-independent English names. Includes neuter/cryptorchid variations.
+    """
+
     Female = "Female"
     FemaleNeuter = "FemaleNeuter"
     Male = "Male"
@@ -140,6 +190,10 @@ class IcarAnimalGenderType(Enum):
 
 
 class IcarAnimalReproductionStatusType(Enum):
+    """
+    Enumeration for different possible reproduction status of an animal.
+    """
+
     Open = "Open"
     Inseminated = "Inseminated"
     Pregnant = "Pregnant"
@@ -150,6 +204,10 @@ class IcarAnimalReproductionStatusType(Enum):
 
 
 class IcarAnimalLactationStatusType(Enum):
+    """
+    Enumeration for different possible lactation status of an animal.
+    """
+
     Dry = "Dry"
     Lead = "Lead"
     Fresh = "Fresh"
@@ -158,12 +216,21 @@ class IcarAnimalLactationStatusType(Enum):
 
 
 class IcarProductionPurposeType(Enum):
+    """
+    Defines the primary product that for which this animal is bred or kept.\nIf animals are kept for breeding or live trade (sale), specify the end purpose of that breeding/trade.\n
+     - Meat corresponds to UNSPC 50111500 Minimally processed meat and poultry products\n - Milk corresponds to UNSPC 50203200 Raw milk products from live animals\n - Wool corresponds to UNSPC 11131506 Unprocessed wool
+    """
+
     Meat = "Meat"
     Milk = "Milk"
     Wool = "Wool"
 
 
 class IcarSetPurposeType(Enum):
+    """
+    Describes the purpose of a set of animals.
+    """
+
     Enclosure = "Enclosure"
     Feeding = "Feeding"
     Finishing = "Finishing"
@@ -178,6 +245,10 @@ class IcarSetPurposeType(Enum):
 
 
 class IcarDiagnosisStageType(Enum):
+    """
+    Enumeration for stage of disease diagnosis.
+    """
+
     Early = "Early"
     Acute = "Acute"
     SubAcute = "SubAcute"
@@ -188,12 +259,20 @@ class IcarDiagnosisStageType(Enum):
 
 
 class IcarDiagnosisSeverityType(Enum):
+    """
+    Enumeration for clinical severity of disease diagnosis.
+    """
+
     Light = "Light"
     Moderate = "Moderate"
     Severe = "Severe"
 
 
 class IcarPositionOnAnimalType(Enum):
+    """
+    Enumeration for the position on the animal where the diagnosis or treatment occurred.
+    """
+
     LegsFrontLeft = "LegsFrontLeft"
     LegsFrontRight = "LegsFrontRight"
     LegsRearLeft = "LegsRearLeft"
@@ -214,6 +293,10 @@ class IcarPositionOnAnimalType(Enum):
 
 
 class IcarWithdrawalProductType(Enum):
+    """
+    Categorises the types of products to which withdrawal periods may apply. These categories are generalised from NOAH/ACVM/FDA/Codex Alimentus.
+    """
+
     Meat = "Meat"
     Milk = "Milk"
     Eggs = "Eggs"
@@ -224,6 +307,11 @@ class IcarWithdrawalProductType(Enum):
 
 
 class UncefactDoseUnitsType(Enum):
+    """
+    Subset of units that are helpful for medicine doses from UN/CEFACT trade facilitation recommendation 20.
+    See https://unece.org/trade/uncefact/cl-recommendations#ui-id-17
+    """
+
     MLT = "MLT"
     LTR = "LTR"
     MGM = "MGM"
@@ -243,7 +331,20 @@ class UncefactDoseUnitsType(Enum):
     EA = "EA"
 
 
+class PlanOrActual(Enum):
+    """
+    Indicator showing if the attributes in the course Summary are actual information for the treatments or the plan
+    """
+
+    Plan = "Plan"
+    Actual = "Actual"
+
+
 class IcarAnimalHealthStatusType(Enum):
+    """
+    Defines the health-status of the animal.
+    """
+
     Healthy = "Healthy"
     Suspicious = "Suspicious"
     Ill = "Ill"
@@ -252,6 +353,10 @@ class IcarAnimalHealthStatusType(Enum):
 
 
 class IcarAttentionCategoryType(Enum):
+    """
+    Defines a category of device messages that may allow filtering of alerts.
+    """
+
     Behaviour = "Behaviour"
     Environment = "Environment"
     Health = "Health"
@@ -262,6 +367,10 @@ class IcarAttentionCategoryType(Enum):
 
 
 class IcarAttentionCauseType(Enum):
+    """
+    Defines causes of alerts from devices.
+    """
+
     Activity = "Activity"
     AnimalTemperature = "AnimalTemperature"
     AnimalTemperatureDecrease = "AnimalTemperatureDecrease"
@@ -300,6 +409,10 @@ class IcarAttentionCauseType(Enum):
 
 
 class IcarAttentionPriorityType(Enum):
+    """
+    Defines the relative priority of alerts.
+    """
+
     Informational = "Informational"
     Normal = "Normal"
     Urgent = "Urgent"
@@ -307,6 +420,10 @@ class IcarAttentionPriorityType(Enum):
 
 
 class IcarStatisticsPurposeType(Enum):
+    """
+    The kind or purpose of the statistics provided (can be expanded).
+    """
+
     TestDay = "TestDay"
     Feeding = "Feeding"
     Reproduction = "Reproduction"
@@ -316,6 +433,10 @@ class IcarStatisticsPurposeType(Enum):
 
 
 class IcarGroupType(Enum):
+    """
+    The type of group for which statistics are provided (can be expanded).
+    """
+
     Herd = "Herd"
     LactationNumber = "LactationNumber"
     DaysInMilk = "DaysInMilk"
@@ -323,6 +444,10 @@ class IcarGroupType(Enum):
 
 
 class IcarAggregationType(Enum):
+    """
+    The type of aggregation. In addition to obvious statistical terms, Range is the difference between min and max, and index is a computed index value.
+    """
+
     Average = "Average"
     Sum = "Sum"
     StDev = "StDev"
@@ -334,6 +459,11 @@ class IcarAggregationType(Enum):
 
 
 class IcarDurationType(Enum):
+    """
+    ISO8601 durations used in aggregations:
+     (1 day - typically from midnight, 1 hour, 24 hour period, 96 hour period, 1 week, 1 month)
+    """
+
     P1D = "P1D"
     PT1H = "PT1H"
     PT24H = "PT24H"
@@ -343,22 +473,57 @@ class IcarDurationType(Enum):
 
 
 class IcarMilkingTypeCode(Enum):
+    """
+    The type of milking (manual or automated)
+    """
+
     Manual = "Manual"
     Automated = "Automated"
 
 
+class UnitCode2(Enum):
+    """
+    UN/CEFACT Common Code for Units of Measurement.
+    """
+
+    KGM = "KGM"
+
+
 class IcarBottleIdentifierType(Enum):
+    """
+    The type of bottle identifiertype according to ICAR_BottleIdentifierCode
+    """
+
     BRC = "BRC"
     RFD = "RFD"
 
 
 class IcarValidSampleFillingIndicatorType(Enum):
+    """
+    Validity of sample based on milk volume: 0=success (>80% expected milk), 1=incomplete (< 20% expected milk), 2=completed (with between 20-80% expected milk).
+    """
+
     field_0 = "0"
     field_1 = "1"
     field_2 = "2"
 
 
+class IcarQuarterId(Enum):
+    """
+    the unique id of the quarter milking
+    """
+
+    LF = "LF"
+    RF = "RF"
+    LR = "LR"
+    RR = "RR"
+
+
 class IcarMilkingRemarksType(Enum):
+    """
+    Enumeration for different possible milking-remarks.
+    """
+
     AnimalSick = "AnimalSick"
     MilkingIncomplete = "MilkingIncomplete"
     TeatSeparated = "TeatSeparated"
@@ -367,12 +532,29 @@ class IcarMilkingRemarksType(Enum):
 
 
 class IcarTestDayCodeType(Enum):
+    """
+    The test day code, indicating a status of the cow on the test day.
+    """
+
     Dry = "Dry"
     SamplingImpossible = "SamplingImpossible"
     Sick = "Sick"
 
 
+class UnitCode3(Enum):
+    """
+    UN/CEFACT Common Code for Units of Measurement.
+    """
+
+    KGM = "KGM"
+    LBR = "LBR"
+
+
 class IcarLactationType(Enum):
+    """
+    Enumeration for lactation type.
+    """
+
     Normal = "Normal"
     field_100Days = "100Days"
     field_200Days = "200Days"
@@ -381,18 +563,30 @@ class IcarLactationType(Enum):
 
 
 class IcarMilkRecordingProtocolType(Enum):
+    """
+    Enumeration for the milk recording protocol.
+    """
+
     A_OfficialMRORepresentative = "A-OfficialMRORepresentative"
     B_HerdOwnerOrNominee = "B-HerdOwnerOrNominee"
     C_Both = "C-Both"
 
 
 class IcarMilkRecordingSchemeType(Enum):
+    """
+    Enumeration for the milk recording scheme
+    """
+
     AllMilkingsAtTestday = "AllMilkingsAtTestday"
     AllMilkingsInPeriod = "AllMilkingsInPeriod"
     OneMilkingAtTestday = "OneMilkingAtTestday"
 
 
 class IcarMilkingsPerDayType(Enum):
+    """
+    Enumeration for the milkings per day.
+    """
+
     field_1 = "1"
     field_2 = "2"
     field_3 = "3"
@@ -401,6 +595,10 @@ class IcarMilkingsPerDayType(Enum):
 
 
 class IcarMilkSamplingSchemeType(Enum):
+    """
+    Enumeration for the different milk sampling schemes.
+    """
+
     ProportionalSizeSamplingOfAllMilkings = "ProportionalSizeSamplingOfAllMilkings"
     ConstantSizeSamplingOfAllMilkings = "ConstantSizeSamplingOfAllMilkings"
     AlternateSampling = "AlternateSampling"
@@ -410,18 +608,32 @@ class IcarMilkSamplingSchemeType(Enum):
 
 
 class IcarMilkSamplingMomentType(Enum):
+    """
+    Enumeration for different possible milk sampling moments.
+    """
+
     Composite = "Composite"
     Morning = "Morning"
     Evening = "Evening"
 
 
 class IcarMilkingType(Enum):
+    """
+    Enumeration for different possible types of milking.
+    """
+
     OfficialMilkResultSuppliedByMRO = "OfficialMilkResultSuppliedByMRO"
     MeasureByICARApprovedEquipment = "MeasureByICARApprovedEquipment"
     MeasureByNotApprovedEquipment = "MeasureByNotApprovedEquipment"
 
 
 class IcarWeightMethodType(Enum):
+    """
+    Method by which the weight is observed.
+     Includes loadcell (loadbars), girth (tape), assessed (visually), walk-over weighing,
+    prediction, imaging (camera/IR), front end weight correlated to whole body, group average (pen/sample weigh).
+    """
+
     LoadCell = "LoadCell"
     Girth = "Girth"
     Assessed = "Assessed"
@@ -433,6 +645,10 @@ class IcarWeightMethodType(Enum):
 
 
 class IcarBreedingValueCalculationType(Enum):
+    """
+    Enumeration for identifying the mathematical calculation method used to calculate breeding values.
+    """
+
     BreedingValue = "BreedingValue"
     ParentAverageBreedingValue = "ParentAverageBreedingValue"
     GenomicBreedingValue = "GenomicBreedingValue"
@@ -441,11 +657,19 @@ class IcarBreedingValueCalculationType(Enum):
 
 
 class IcarConformationTraitGroupType(Enum):
+    """
+    Enumeration for the type of trait.
+    """
+
     Composite = "Composite"
     Linear = "Linear"
 
 
 class IcarConformationTraitType(Enum):
+    """
+    The type of conformation trait according to ICAR guidelines
+    """
+
     Angularity = "Angularity"
     BackLength = "BackLength"
     BackWidth = "BackWidth"
@@ -517,11 +741,19 @@ class IcarConformationTraitType(Enum):
 
 
 class IcarConformationScoringMethodType(Enum):
+    """
+    The method of conformation scoring
+    """
+
     Manual = "Manual"
     Automated = "Automated"
 
 
 class IcarAnimalStatusType(Enum):
+    """
+    Defines the status of the animal either absolutely and/or with reference to the location on which it is recorded\nOff-farm signifies that the animal is no longer recorded at the location.
+    """
+
     Alive = "Alive"
     Dead = "Dead"
     OffFarm = "OffFarm"
@@ -529,17 +761,29 @@ class IcarAnimalStatusType(Enum):
 
 
 class IcarAnimalRelationType(Enum):
+    """
+    Enumeration for parent relationships - genetic is the default, recipient and adoptive (foster) are alternatives.
+    """
+
     Genetic = "Genetic"
     Recipient = "Recipient"
     Adoptive = "Adoptive"
 
 
 class IcarRegistrationReasonType(Enum):
+    """
+    Enumeration for registration reason: Born, or Registered (induct existing animal).
+    """
+
     Born = "Born"
     Registered = "Registered"
 
 
 class IcarDeathReasonType(Enum):
+    """
+    Enumeration for death reason. Not specified in previous ADE data dictionary.
+    """
+
     Missing = "Missing"
     Parturition = "Parturition"
     Disease = "Disease"
@@ -558,6 +802,10 @@ class IcarDeathReasonType(Enum):
 
 
 class IcarDeathDisposalMethodType(Enum):
+    """
+    Enumeration for disposal method. Not specified in previous ADE data dictionary, required by some schemes.
+    """
+
     ApprovedService = "ApprovedService"
     Consumption = "Consumption"
     OnPremise = "OnPremise"
@@ -565,6 +813,12 @@ class IcarDeathDisposalMethodType(Enum):
 
 
 class IcarDeathMethodType(Enum):
+    """
+    Enumeration for method of death.
+     Note: Some organisations will use Euthanized and Culled as synonyms. Culling may be euthanasia for disease control purposes.
+     Culling is also used to describe live animal departures (out of this scope).
+    """
+
     Perished = "Perished"
     Slaughter = "Slaughter"
     Culled = "Culled"
@@ -576,6 +830,10 @@ class IcarDeathMethodType(Enum):
 
 
 class IcarArrivalReasonType(Enum):
+    """
+    Enumeration for arrival reason. Not specified in previous ADE data dictionary.
+    """
+
     Purchase = "Purchase"
     InternalTransfer = "InternalTransfer"
     Imported = "Imported"
@@ -592,6 +850,10 @@ class IcarArrivalReasonType(Enum):
 
 
 class IcarDepartureKindType(Enum):
+    """
+    Enumeration for the kind of departure. Type of destination or transfer.
+    """
+
     InternalTransfer = "InternalTransfer"
     Export = "Export"
     Slaughter = "Slaughter"
@@ -608,6 +870,10 @@ class IcarDepartureKindType(Enum):
 
 
 class IcarDepartureReasonType(Enum):
+    """
+    Enumeration for departure cause. Not specified in previous ADE data dictionary.
+    """
+
     Age = "Age"
     Superfluous = "Superfluous"
     Slaughter = "Slaughter"
@@ -628,6 +894,10 @@ class IcarDepartureReasonType(Enum):
 
 
 class IcarReproPregnancyMethodType(Enum):
+    """
+    The method of pregnancy determination.
+    """
+
     Echography = "Echography"
     Palpation = "Palpation"
     Blood = "Blood"
@@ -637,6 +907,10 @@ class IcarReproPregnancyMethodType(Enum):
 
 
 class IcarReproPregnancyResultType(Enum):
+    """
+    The result of pregnancy diagnosis (empty/pregnant).
+    """
+
     Empty = "Empty"
     Pregnant = "Pregnant"
     Multiple = "Multiple"
@@ -644,6 +918,10 @@ class IcarReproPregnancyResultType(Enum):
 
 
 class IcarReproHeatDetectionMethodType(Enum):
+    """
+    The method of detecting the heat of an animal
+    """
+
     Chemical = "Chemical"
     Visual = "Visual"
     Pedometer = "Pedometer"
@@ -654,12 +932,20 @@ class IcarReproHeatDetectionMethodType(Enum):
 
 
 class IcarReproHeatCertaintyType(Enum):
+    """
+    The certainty of a specific heat. 'Potential' is very early in the heat cycle, e.g. first 2 hours, followed by 'Suspect', until the animal is most likely 'InHeat'.
+    """
+
     InHeat = "InHeat"
     Suspect = "Suspect"
     Potential = "Potential"
 
 
 class IcarReproHeatSignType(Enum):
+    """
+    The signs of the heat (Slime,Clear slime,Interested in other animals,Stands under,Bawling,Blood)
+    """
+
     Slime = "Slime"
     ClearSlime = "ClearSlime"
     InterestedInOtherAnimals = "InterestedInOtherAnimals"
@@ -669,6 +955,10 @@ class IcarReproHeatSignType(Enum):
 
 
 class IcarReproHeatIntensityType(Enum):
+    """
+    The intensity of the heat (Very weak,Weak,Normal,Strong,Very strong)
+    """
+
     VeryWeak = "VeryWeak"
     Weak = "Weak"
     Normal = "Normal"
@@ -677,6 +967,10 @@ class IcarReproHeatIntensityType(Enum):
 
 
 class IcarReproInseminationType(Enum):
+    """
+    The method of insemination (natural service, run with bull, insemination, implantation
+    """
+
     NaturalService = "NaturalService"
     RunWithBull = "RunWithBull"
     Insemination = "Insemination"
@@ -684,11 +978,19 @@ class IcarReproInseminationType(Enum):
 
 
 class IcarReproSemenPreservationType(Enum):
+    """
+    Method of semen preservation (liquid usually with extender, frozen)
+    """
+
     Liquid = "Liquid"
     Frozen = "Frozen"
 
 
 class IcarReproCalvingEaseType(Enum):
+    """
+    Enumeration for calving ease. In the order they are listed, these correspond to INTERBEEF codes 1 to 5
+    """
+
     EasyUnassisted = "EasyUnassisted"
     EasyAssisted = "EasyAssisted"
     DifficultExtraAssistance = "DifficultExtraAssistance"
@@ -697,6 +999,10 @@ class IcarReproCalvingEaseType(Enum):
 
 
 class IcarParturitionBirthStatusType(Enum):
+    """
+    Enumeration for the widely used progeny birth statuses.
+    """
+
     Alive = "Alive"
     Stillborn = "Stillborn"
     Aborted = "Aborted"
@@ -707,6 +1013,10 @@ class IcarParturitionBirthStatusType(Enum):
 
 
 class IcarParturitionBirthSizeType(Enum):
+    """
+    Enumeration for the widely used progeny birth sizes.
+    """
+
     ExtraSmall = "ExtraSmall"
     Small = "Small"
     Average = "Average"
@@ -715,6 +1025,10 @@ class IcarParturitionBirthSizeType(Enum):
 
 
 class IcarRecommendationType(Enum):
+    """
+    the type of recommendation (SireRecommended, RecommendationImpossible, BeefSire, NoBreedingSire
+    """
+
     SireRecommended = "SireRecommended"
     RecommendationImpossible = "RecommendationImpossible"
     BeefSire = "BeefSire"
@@ -722,5 +1036,9 @@ class IcarRecommendationType(Enum):
 
 
 class IcarReproEmbryoFlushingMethodType(Enum):
+    """
+    The method of embryo flushing.
+    """
+
     OPU_IVF = "OPU-IVF"
     Superovulation = "Superovulation"

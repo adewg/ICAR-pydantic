@@ -69,7 +69,7 @@ exclude = '''
 
 [tool.ruff]
 line-length = 88
-target-version = "py313"
+target-version = "py39"
 lint.ignore = [
     'E501',
 ]
@@ -81,3 +81,6 @@ filter_files = true
 [tool.rope]
 sort_imports_alphabetically = false
 imports.preferred_import_style = "from-module"
+
+[tool.datamodel-codegen]
+target-python-version = "3.9"

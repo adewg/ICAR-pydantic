@@ -9,6 +9,42 @@ from pathlib import Path
 from rope.base.project import Project
 from rope.refactor.move import create_move
 
+GEOJSON_CLASSES = {
+    "Coordinate",
+    "Type",
+    "Type1",
+    "Type2",
+    "Type3",
+    "Type4",
+    "Type5",
+    "Geometry",
+    "Geometry1",
+    "Geometry2",
+    "Geometry3",
+    "Geometry4",
+    "Geometry5",
+    "Geometry6",
+}
+
+RESOURCES_CLASSES = {
+    "SupportedMessage",
+    "HeatReportNedapCowControl",
+    "HeatReportScrSenseTime",
+    "VisualDetection",
+}
+
+ENUMS_CLASSES = {
+    "UnitCode",
+    "UnitCode2",
+    "UnitCode3",
+    "PlanOrActual",
+    "IcarQuarterId",
+}
+
+TYPES_CLASSES = {
+    "Fraction",
+}
+
 
 class CodeCleaner:
     def __init__(
@@ -49,7 +85,6 @@ class CodeCleaner:
         self.enums_module = self.project.root.create_file("icar/enums.py")
         self.collections_module = self.project.root.create_file("icar/collections.py")
         self.geojson_module = self.project.root.create_file("icar/geojson.py")
-        self.others_module = self.project.root.create_file("icar/others.py")
         self.module_map = {}
 
     def clean(self):
@@ -76,6 +111,9 @@ class CodeCleaner:
         self.convert_to_relative_imports()
 
     def get_destination_module(self, class_name):
+        # workaround for https://github.com/adewg/ICAR/issues/543
+        if class_name == "IcarInventoryTransactionType":
+            return self.resources_module
         destination = self.module_map.get(class_name)
 
         if destination:
@@ -86,24 +124,16 @@ class CodeCleaner:
         if class_name.endswith("Array") or class_name in {"BatchResults", "View"}:
             return self.collections_module
 
-        if class_name in {
-            "Coordinate",
-            "Type",
-            "Type1",
-            "Type2",
-            "Type3",
-            "Type4",
-            "Type5",
-            "Geometry",
-            "Geometry1",
-            "Geometry2",
-            "Geometry3",
-            "Geometry4",
-            "Geometry5",
-            "Geometry6",
-        }:
+        if class_name in GEOJSON_CLASSES:
             return self.geojson_module
-        return self.others_module
+        if class_name in TYPES_CLASSES:
+            return self.types_module
+        if class_name in ENUMS_CLASSES:
+            return self.enums_module
+        if class_name in RESOURCES_CLASSES:
+            return self.resources_module
+
+        raise ValueError(f"Cannot find destination for class {class_name}")
 
     def map_files(self):
         self.map_modules(self.enums_module, self.enums_files)

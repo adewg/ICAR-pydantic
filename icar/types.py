@@ -3,19 +3,23 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import List, Optional
 
-from pydantic import AnyUrl, BaseModel, Field, confloat, constr
+from pydantic import AnyUrl, BaseModel, Field, RootModel, confloat, constr
 
-from . import enums, geojson, others, resources
+from . import enums, geojson
 
 
-class IcarDateTimeType(BaseModel):
-    __root__: datetime = Field(
+class IcarDateTimeType(RootModel[datetime]):
+    root: datetime = Field(
         ...,
         description="A particular point in the progression of time. Shall be UTC format with Z, specified in RFC3339 (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
 
 
 class IcarMetaDataType(BaseModel):
+    """
+    Generic meta data on this event
+    """
+
     source: str = Field(
         ...,
         description="Source where data is retrieved from. URI  or reverse DNS that identifies the source system.",
@@ -50,6 +54,10 @@ class IcarMetaDataType(BaseModel):
 
 
 class IcarIdentifierType(BaseModel):
+    """
+    Identifies a resource.
+    """
+
     id: str = Field(
         ...,
         description="A unique identification for the resource issued under the auspices of the scheme.",
@@ -61,18 +69,28 @@ class IcarIdentifierType(BaseModel):
 
 
 class IcarLocationIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Location identifier based on a scheme and ID.
+    """
 
 
 class IcarFeedIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Provides a scheme + identifier mechanism for feed types (see location-scheme.md for the icar list for scheme fao.org).).
+    """
 
 
 class IcarPropertyIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Provides a scheme + identifier mechanism for feed properties (see location-scheme.md for the icar list for scheme icar.org).
+    """
 
 
 class IcarFeedPropertyType(BaseModel):
+    """
+    property of the feed.
+    """
+
     propertyIdentifier: Optional[IcarPropertyIdentifierType] = Field(
         None, description="identifies the property of the feed"
     )
@@ -89,11 +107,15 @@ class IcarFeedPropertyType(BaseModel):
     )
 
 
-class IcarRationIdType(BaseModel):
-    __root__: str
+class IcarRationIdType(RootModel[str]):
+    root: str
 
 
 class IcarFeedsInRationType(BaseModel):
+    """
+    Feeds that are added to a specific ration.
+    """
+
     feedId: Optional[IcarFeedIdentifierType] = Field(
         None, description="identifies the feed"
     )
@@ -103,15 +125,23 @@ class IcarFeedsInRationType(BaseModel):
 
 
 class IcarTraitLabelIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Trait identifier based on a scheme and ID.
+    """
 
 
 class IcarAnimalIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Identifies an animal using a scheme and ID.
+    """
 
 
 class IcarFeedDurationType(BaseModel):
-    unitCode: Optional[others.UnitCode] = Field(
+    """
+    The length in time of the feeding
+    """
+
+    unitCode: Optional[enums.UnitCode] = Field(
         None, description="UN/CEFACT Common Code for Units of Measurement."
     )
     value: Optional[float] = Field(
@@ -120,6 +150,10 @@ class IcarFeedDurationType(BaseModel):
 
 
 class IcarFeedQuantityType(BaseModel):
+    """
+    The amount of feed
+    """
+
     unitCode: enums.UncefactMassUnitsType = Field(
         ...,
         description="Units specified in UN/CEFACT 3-letter form. Default if not specified is KGM.",
@@ -128,6 +162,10 @@ class IcarFeedQuantityType(BaseModel):
 
 
 class IcarCostType(BaseModel):
+    """
+    The amount of costs
+    """
+
     currency: str = Field(
         ...,
         description="The currency of the cost expressed using the ISO 4217 3-character code (such as AUD, GBP, USD, EUR).",
@@ -136,6 +174,10 @@ class IcarCostType(BaseModel):
 
 
 class IcarConsumedFeedType(BaseModel):
+    """
+    gives the consumed feed and the amount the animal/group was entitled to. Amounts are real weights
+    """
+
     feedId: IcarFeedIdentifierType = Field(
         ..., description="The identifier for the feed consumed"
     )
@@ -160,6 +202,10 @@ class IcarConsumedFeedType(BaseModel):
 
 
 class IcarConsumedRationType(BaseModel):
+    """
+    Gives the consumed amount of a mixed ration, and the amount the animal/group was entitled to. Amounts are real weights.
+    """
+
     rationId: IcarRationIdType = Field(
         ..., description="The identifier for the ration consumed"
     )
@@ -184,6 +230,10 @@ class IcarConsumedRationType(BaseModel):
 
 
 class IcarResourceReferenceType(BaseModel):
+    """
+    Defines a reference to another resource.
+    """
+
     field_context: Optional[str] = Field(
         None,
         alias="@context",
@@ -212,10 +262,16 @@ class IcarResourceReferenceType(BaseModel):
 
 
 class IcarDeviceRegistrationIdentifierType(IcarIdentifierType):
-    pass
+    """
+    A device registration scheme and ID that identifies a registered device. The primary scheme used should be `org.icar`.
+    """
 
 
 class IcarDeviceReferenceType(IcarResourceReferenceType):
+    """
+    Device reference details.
+    """
+
     model: Optional[str] = Field(
         None,
         description="ICAR registered device model, which represents manufacturer, model, hardware and software versions.",
@@ -233,11 +289,15 @@ class IcarDeviceReferenceType(IcarResourceReferenceType):
     )
 
 
-class IcarFeedRecommendationIdType(BaseModel):
-    __root__: str
+class IcarFeedRecommendationIdType(RootModel[str]):
+    root: str
 
 
 class IcarRecommendedFeedType(BaseModel):
+    """
+    Gives the recommendation to be fed to an animal or group of animals of a certain feed.
+    """
+
     feedId: Optional[IcarFeedIdentifierType] = Field(
         None, description="The identifier for the feed recommended"
     )
@@ -247,6 +307,10 @@ class IcarRecommendedFeedType(BaseModel):
 
 
 class IcarRecommendedRationType(BaseModel):
+    """
+    Gives the recommendation to be fed to an animal or group of animals of a certain ration.
+    """
+
     rationId: Optional[IcarRationIdType] = Field(
         None, description="The identifier for the ration recommended"
     )
@@ -257,6 +321,10 @@ class IcarRecommendedRationType(BaseModel):
 
 
 class IcarDeviceManufacturerType(BaseModel):
+    """
+    Describes the devices on a certain location.
+    """
+
     id: str = Field(
         ...,
         description="Unique id of the manufacturer. Domain name/url --> lely.com, …",
@@ -276,47 +344,17 @@ class IcarDeviceManufacturerType(BaseModel):
     )
 
 
-class IcarInventoryTransactionType(resources.IcarEventCoreResource):
-    transactionKind: enums.IcarInventoryTransactionKindType = Field(
-        ..., description="Identifies the transaction kind."
-    )
-    quantity: float = Field(
-        ...,
-        description="The overall volume, weight or count of the product in the transaction in the units defined.",
-    )
-    units: str = Field(
-        ...,
-        description="The units of the quantity specified.  Where applicable it is recommended that uncefact mass and volume units are used.",
-    )
-    supplierName: Optional[str] = Field(
-        None,
-        description="The supplier of the product in this transaction.  This is particularly relevant if the transaction is a receipt.",
-    )
-    expiryDate: Optional[IcarDateTimeType] = Field(
-        None, description="The expiry date of the product supplied in the transaction."
-    )
-    totalCost: Optional[float] = Field(
-        None, description="Total cost applied to this transaction"
-    )
-    currency: Optional[str] = Field(
-        None,
-        description="The currency of the cost expressed using the ISO 4217 3-character code (such as AUD, GBP, USD, EUR).",
-    )
-    packSize: Optional[float] = Field(
-        None,
-        description="The volume or weight of the product in a pack in the units defined. Especially relevant for Vet Medicines.",
-    )
-    numberOfPacks: Optional[float] = Field(
-        None,
-        description="The number of packs of the product in the transaction. Especially relevant for Vet Medicines. Could be a decimal number for a part-pack.",
-    )
-
-
 class IcarProductIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Provides a scheme + identifier mechanism for product types.
+    """
 
 
 class IcarProductReferenceType(IcarResourceReferenceType):
+    """
+    Product Reference refers to a specific product. It is based on the generalised resource reference type.
+    """
+
     identifiers: Optional[List[IcarProductIdentifierType]] = Field(
         None,
         description="An array of product identifiers. This allows a product to have multiple identifiers for manufacturers, distributors, official registrations, etc.",
@@ -333,6 +371,10 @@ class IcarProductReferenceType(IcarResourceReferenceType):
 
 
 class IcarFeedReferenceType(IcarProductReferenceType):
+    """
+    Feed Reference defines a feed product.
+    """
+
     category: Optional[enums.IcarFeedCategoryType] = Field(
         None, description="Defines the category of the feed product."
     )
@@ -342,10 +384,16 @@ class IcarFeedReferenceType(IcarProductReferenceType):
 
 
 class IcarBreedIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Identifies a breed using a scheme and ID. Allows country or species-specific breeds that are a superset of the ICAR list.
+    """
 
 
 class IcarInventoryClassificationType(BaseModel):
+    """
+    This type is used to categorise animals by shared characteristics - so you can say the equivalent of 200 x 2-year-old in-calf Jersey heifers.
+    """
+
     name: str = Field(
         ..., description="Human-readable name for this inventory grouping."
     )
@@ -364,7 +412,7 @@ class IcarInventoryClassificationType(BaseModel):
     )
     birthPeriod: Optional[
         constr(
-            regex=r"^(([0-9]{4})|([0-9]{4}-[0-1][0-9])|([0-9]{4}-[0-1][0-9]-[0-3][0-9](Z?)(/|--)[0-9]{4}-[0-1][0-9]-[0-3][0-9](Z?)))$"
+            pattern=r"^(([0-9]{4})|([0-9]{4}-[0-1][0-9])|([0-9]{4}-[0-1][0-9]-[0-3][0-9](Z?)(/|--)[0-9]{4}-[0-1][0-9]-[0-3][0-9](Z?)))$"
         )
     ] = Field(
         None,
@@ -386,16 +434,26 @@ class IcarInventoryClassificationType(BaseModel):
 
 
 class IcarAnimalSetReferenceType(IcarResourceReferenceType):
+    """
+    References an animal set through its unique ID in the source system, optionally also specifying its URL (@ID).
+    """
+
     identifier: IcarIdentifierType = Field(
         ..., description="Provides the identifier of the referenced resource."
     )
 
 
 class IcarDiagnosisIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Provides a scheme + identifier mechanism for diagnosis codes (e.g. VENOM or ICAR coding).
+    """
 
 
 class IcarPositionType(BaseModel):
+    """
+    The possible positions for treatment or diagnosis
+    """
+
     position: Optional[enums.IcarPositionOnAnimalType] = Field(
         None,
         description="Position on the animal where the diagnosis or treatment occurred.",
@@ -403,6 +461,10 @@ class IcarPositionType(BaseModel):
 
 
 class IcarDiagnosisType(BaseModel):
+    """
+    Provides properties for a single animal health diagnosis.
+    """
+
     id: Optional[str] = Field(None, description="Unique identifier for this diagnosis.")
     name: Optional[str] = Field(
         None, description="Name indicating the health condition diagnosed."
@@ -433,10 +495,16 @@ class IcarDiagnosisType(BaseModel):
 
 
 class IcarMedicineIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Identifies a medicine registraton with a national Scheme and a registered ID within that scheme.
+    """
 
 
 class IcarMedicineReferenceType(IcarProductReferenceType):
+    """
+    Provides basic details about a medicine and links to a medicine resource (if available).
+    """
+
     approved: Optional[str] = Field(
         None,
         description="An indicator whether the medicine or remedy is an approved medicine",
@@ -448,6 +516,10 @@ class IcarMedicineReferenceType(IcarProductReferenceType):
 
 
 class IcarMedicineBatchType(BaseModel):
+    """
+    Defines a batch of medicine or product with an expiry date.
+    """
+
     identifier: Optional[str] = Field(None, description="The ID, batch or lot number.")
     expiryDate: Optional[IcarDateTimeType] = Field(
         None,
@@ -470,6 +542,10 @@ class IcarMedicineWithdrawalType(BaseModel):
 
 
 class IcarMedicineDoseType(BaseModel):
+    """
+    Provides details of a dose of medicine or other product.
+    """
+
     doseQuantity: Optional[float] = Field(
         None, description="Quantity of medicine or product administered."
     )
@@ -479,6 +555,10 @@ class IcarMedicineDoseType(BaseModel):
 
 
 class IcarMedicineCourseSummaryType(BaseModel):
+    """
+    Describes a course of treatment with total product, start and end dates
+    """
+
     startDate: Optional[IcarDateTimeType] = Field(
         None,
         description="RFC3339 UTC start date of the treatment course (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance)",
@@ -513,7 +593,7 @@ class IcarMedicineCourseSummaryType(BaseModel):
         None,
         description="Batches and expiry details of the medicine (there may be several).",
     )
-    planOrActual: Optional[others.PlanOrActual] = Field(
+    planOrActual: Optional[enums.PlanOrActual] = Field(
         None,
         description="Indicator showing if the attributes in the course Summary are actual information for the treatments or the plan",
     )
@@ -522,11 +602,15 @@ class IcarMedicineCourseSummaryType(BaseModel):
     )
 
 
-class IcarDateType(BaseModel):
-    __root__: date = Field(..., description="A particular day.")
+class IcarDateType(RootModel[date]):
+    root: date = Field(..., description="A particular day.")
 
 
 class IcarGroupSpecifierType(BaseModel):
+    """
+    definition of the groups for which statistics are provided. None of these are mandatory and can be used when convenient.
+    """
+
     lactationNumberRangeMin: Optional[float] = Field(
         None, description="minimum number of lactations for the animals in the group."
     )
@@ -545,10 +629,16 @@ class IcarGroupSpecifierType(BaseModel):
 
 
 class IcarMetricType(IcarIdentifierType):
-    pass
+    """
+    Identifies a metric using a scheme and ID. Allows country or species-specific metrics that are a superset of the ICAR list.
+    """
 
 
 class IcarStatisticsType(BaseModel):
+    """
+    The statistics that have been calculated.
+    """
+
     metric: Optional[IcarMetricType] = Field(
         None,
         description="The metric code for a specific statistics. See https://github.com/adewg/ICAR/wiki/Schemes for more info",
@@ -564,6 +654,10 @@ class IcarStatisticsType(BaseModel):
 
 
 class IcarStatisticsGroupType(BaseModel):
+    """
+    definition of the groups for which statistics are provided
+    """
+
     icarGroupType: Optional[enums.IcarGroupType] = None
     denominator: Optional[float] = Field(
         None, description="Number of animals in the group."
@@ -578,6 +672,10 @@ class IcarStatisticsGroupType(BaseModel):
 
 
 class IcarPositionObservationType(BaseModel):
+    """
+    This type may be included in a position observation event to identify either a named position (such as a barn or pen) or a geographic location.
+    """
+
     positionName: Optional[str] = Field(
         None,
         description="The name of a location, such as a barn, pen, building, or field.",
@@ -593,6 +691,10 @@ class IcarPositionObservationType(BaseModel):
 
 
 class IcarObservationStatisticsType(IcarStatisticsType):
+    """
+    Aggregated statistics for a animal behaviour or similar observation over a time period.
+    """
+
     startDateTime: IcarDateTimeType = Field(
         ...,
         description="The start date/time of the aggregation period for this particular statistic.",
@@ -608,14 +710,22 @@ class IcarObservationStatisticsType(IcarStatisticsType):
 
 
 class IcarMilkDurationType(BaseModel):
-    unitCode: Optional[others.UnitCode] = Field(
+    """
+    The length in time of the milking
+    """
+
+    unitCode: Optional[enums.UnitCode] = Field(
         None, description="UN/CEFACT Common Code for Units of Measurement."
     )
     value: Optional[float] = None
 
 
 class IcarMilkingMilkWeightType(BaseModel):
-    unitCode: others.UnitCode2 = Field(
+    """
+    The amount of milk milked
+    """
+
+    unitCode: enums.UnitCode2 = Field(
         ..., description="UN/CEFACT Common Code for Units of Measurement."
     )
     value: float
@@ -645,6 +755,10 @@ class IcarQuarterMilkingSampleType(BaseModel):
 
 
 class IcarMilkCharacteristicsType(BaseModel):
+    """
+    Characteristics of the milk produced.
+    """
+
     characteristic: str = Field(
         ...,
         description="Treat this field as an enum, with the list and units in https://github.com/adewg/ICAR/blob/ADE-1/enums/icarMilkCharacteristicCodeType.json.",
@@ -661,7 +775,7 @@ class IcarMilkCharacteristicsType(BaseModel):
 
 
 class IcarQuarterMilkingType(BaseModel):
-    icarQuarterId: Optional[others.IcarQuarterId] = Field(
+    icarQuarterId: Optional[enums.IcarQuarterId] = Field(
         None, description="the unique id of the quarter milking"
     )
     xposition: Optional[float] = Field(
@@ -706,6 +820,10 @@ class IcarAnimalMilkingSampleType(BaseModel):
 
 
 class IcarMilkingPredictionType(BaseModel):
+    """
+    The amount of milk, fat and protein milked in a defined period of time
+    """
+
     milkWeight: IcarMilkingMilkWeightType
     fatWeight: Optional[IcarMilkingMilkWeightType] = None
     proteinWeight: Optional[IcarMilkingMilkWeightType] = None
@@ -716,13 +834,17 @@ class IcarMilkingPredictionType(BaseModel):
 
 
 class IcarTraitAmountType(BaseModel):
-    unitCode: others.UnitCode3 = Field(
+    unitCode: enums.UnitCode3 = Field(
         ..., description="UN/CEFACT Common Code for Units of Measurement."
     )
     value: float
 
 
 class IcarMilkRecordingMethodType(BaseModel):
+    """
+    milk recording method information.
+    """
+
     milkRecordingProtocol: Optional[enums.IcarMilkRecordingProtocolType] = Field(
         None,
         description="Protocol A: Official MRO representative, Protocol B: Herd owner or its nominee, Protocol C: Official MRO representative or herd owner or its nominee.",
@@ -757,6 +879,10 @@ class IcarMilkRecordingMethodType(BaseModel):
 
 
 class IcarMassMeasureType(BaseModel):
+    """
+    Defines a mass or weight measurement type that can be used in events or other resources.
+    """
+
     measurement: Optional[confloat(ge=0.0)] = Field(
         None,
         description="The weight observation, in the units specified (usually kilograms).",
@@ -776,6 +902,10 @@ class IcarMassMeasureType(BaseModel):
 
 
 class IcarIndividualWeightType(BaseModel):
+    """
+    The Animal-Weight entity records a liveweight for an individual animal in a Group Weight. Either animal or weight may be null.
+    """
+
     animal: Optional[IcarAnimalIdentifierType] = Field(
         None, description="Unique animal scheme and identifier combination."
     )
@@ -783,7 +913,9 @@ class IcarIndividualWeightType(BaseModel):
 
 
 class IcarBVBaseIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Breeding value base identifier based on a scheme and ID.
+    """
 
 
 class IcarBreedingValueType(BaseModel):
@@ -806,6 +938,10 @@ class IcarBreedingValueType(BaseModel):
 
 
 class IcarConformationScoreType(BaseModel):
+    """
+    conformation score
+    """
+
     traitGroup: Optional[enums.IcarConformationTraitGroupType] = Field(
         None,
         description="Defines whether the trait is a composite trait or a linear trait.",
@@ -827,21 +963,40 @@ class IcarConformationScoreType(BaseModel):
     )
 
 
+class Fraction(BaseModel):
+    breed: Optional[IcarBreedIdentifierType] = Field(
+        None, description="The breed for this breed fraction using a scheme and id."
+    )
+    fraction: Optional[float] = Field(
+        None, description="The proportion of the denominator that this breed comprises."
+    )
+
+
 class IcarBreedFractionsType(BaseModel):
+    """
+    Defines the breeds of the animal by fraction expressed as a denominator and, for each breed, a numerator.
+    """
+
     denominator: int = Field(
         ...,
         description="The denominator of breed fractions - for instance 16, 64, or 100.",
     )
-    fractions: Optional[List[others.Fraction]] = Field(
+    fractions: Optional[List[Fraction]] = Field(
         None, description="The numerators of breed fractions for each breed proportion."
     )
 
 
 class IcarCoatColorIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Coat color identifier based on a scheme and Id.
+    """
 
 
 class IcarParentageType(BaseModel):
+    """
+    Use this type to define a parent of an animal.
+    """
+
     parentOf: IcarAnimalIdentifierType = Field(
         ...,
         description="References the child of this parent (allowing you to build multi-generation pedigrees).",
@@ -861,6 +1016,10 @@ class IcarParentageType(BaseModel):
 
 
 class PostalAddress(BaseModel):
+    """
+    An address object from schema.org (see https://schema.org/PostalAddress).
+    """
+
     addressCountry: Optional[str] = Field(
         None,
         description="The country. For example, USA. You can also provide the two-letter ISO 3166-1 alpha-2 country code.",
@@ -885,6 +1044,10 @@ class PostalAddress(BaseModel):
 
 
 class IcarOrganizationIdentityType(BaseModel):
+    """
+    The identity of an organization in livestock supply chains. Based on a minimal set of identifiers from schema.org/organization.
+    """
+
     name: str = Field(..., description="Name of the organisation")
     leiCode: Optional[str] = Field(
         None,
@@ -901,10 +1064,16 @@ class IcarOrganizationIdentityType(BaseModel):
 
 
 class IcarOrganizationIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Scheme and identifier based mechanism for identifying organisations, including registered establishments and scheme memberships.
+    """
 
 
 class IcarOrganizationType(IcarOrganizationIdentityType):
+    """
+    Details for an organization that support its role in livestock systems or supply chains. Conceptually extends schema.org/organization.
+    """
+
     establishmentIdentifiers: Optional[List[IcarOrganizationIdentifierType]] = Field(
         None,
         description="Scheme and identifier combinations that provide official registrations for a business or establishment",
@@ -924,6 +1093,10 @@ class IcarOrganizationType(IcarOrganizationIdentityType):
 
 
 class IcarInterestedPartyType(IcarOrganizationType):
+    """
+    Identifies the interests an organization has in an entity, for example in a consignment or in a processingLot. Extends the organization object.
+    """
+
     interests: List[str] = Field(
         ...,
         description="Identifies the type of interest that the party has in a consignment or animal.",
@@ -931,10 +1104,16 @@ class IcarInterestedPartyType(IcarOrganizationType):
 
 
 class IcarDeclarationIdentifierType(IcarIdentifierType):
-    pass
+    """
+    A scheme and ID combination that uniquely identifies a claim or declaration in an assurance programme or equivalent.
+    """
 
 
 class IcarConsignmentDeclarationType(BaseModel):
+    """
+    A Consignment Declaration provides a claim or declaration, usually by the source of animals, regarding the assurance or other status of animals in the consignment.
+    """
+
     declarationId: Optional[IcarDeclarationIdentifierType] = Field(
         None,
         description="Identifies the specific declaration being made using a scheme and an id.",
@@ -945,6 +1124,10 @@ class IcarConsignmentDeclarationType(BaseModel):
 
 
 class IcarConsignmentType(BaseModel):
+    """
+    Consignment information for a movement (arrival, departure).
+    """
+
     id: Optional[IcarIdentifierType] = Field(
         None, description="Official identifier for the movement."
     )
@@ -1035,10 +1218,16 @@ class IcarConsignmentType(BaseModel):
 
 
 class IcarReasonIdentifierType(IcarIdentifierType):
-    pass
+    """
+    Extended reason identifier based on a scheme and ID.
+    """
 
 
 class IcarAnimalStateType(BaseModel):
+    """
+    State information about an animal
+    """
+
     currentLactationParity: Optional[float] = Field(
         None, description="The current parity of the animal."
     )
@@ -1057,6 +1246,10 @@ class IcarAnimalStateType(BaseModel):
 
 
 class IcarReproHeatWindowType(BaseModel):
+    """
+    The optimum breeding window for an animal in heat
+    """
+
     startDateTime: IcarDateTimeType = Field(
         ...,
         description="RFC3339 UTC date/time when the optimum insemination window starts (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
@@ -1071,6 +1264,10 @@ class IcarReproHeatWindowType(BaseModel):
 
 
 class IcarSireRecommendationType(BaseModel):
+    """
+    Gives one possible sire recommended to use on an animal.
+    """
+
     recommendationType: Optional[enums.IcarRecommendationType] = None
     sireIdentifiers: Optional[List[IcarAnimalIdentifierType]] = Field(
         None,

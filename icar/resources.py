@@ -2,12 +2,16 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, RootModel
 
-from . import enums, others, types
+from . import enums, types
 
 
 class IcarResponseMessageResource(BaseModel):
+    """
+    An RFC7807 compliant problem response for JSON APIs.
+    """
+
     type: Optional[str] = Field(
         None,
         description="Machine readable URI or code that defines the type of error or warning.",
@@ -33,6 +37,10 @@ class IcarResponseMessageResource(BaseModel):
 
 
 class IcarResource(BaseModel):
+    """
+    Base class for a resource, defining self-link and meta data. Resources should use AllOf to incorporate this class.
+    """
+
     resourceType: str = Field(
         ...,
         description="Uniform resource identifier (URI) or shortname of the logical resourceType. The ResourceType catalog defines the set of allowed resourceTypes.",
@@ -52,6 +60,10 @@ class IcarResource(BaseModel):
 
 
 class IcarEventCoreResource(IcarResource):
+    """
+    Core schema for representing an event.
+    """
+
     id: Optional[str] = Field(
         None, description="Unique identifier in the source system for this event."
     )
@@ -78,12 +90,20 @@ class IcarEventCoreResource(IcarResource):
 
 
 class IcarAnimalEventCoreResource(IcarEventCoreResource):
+    """
+    Extends icarEventCoreResource to add a single individual animal identifier.
+    """
+
     animal: types.IcarAnimalIdentifierType = Field(
         ..., description="Unique animal scheme and identifier combination."
     )
 
 
 class IcarFeedReportResource(IcarResource):
+    """
+    Reporting the feed consumed during a certain time period
+    """
+
     animals: Optional[List[types.IcarAnimalIdentifierType]] = Field(
         None,
         description="As per JSON-LD Hydra syntax, animals provides the array of animals part of the feeding report. This could also be a report for one animal.",
@@ -101,7 +121,15 @@ class IcarFeedReportResource(IcarResource):
     consumedRation: Optional[List[types.IcarConsumedRationType]] = None
 
 
+class SupportedMessage(BaseModel):
+    messages: Optional[enums.IcarMessageType] = None
+
+
 class IcarDeviceResource(IcarResource):
+    """
+    This resource is used to describe an instance of a device at a location.
+    """
+
     id: str = Field(
         ...,
         description="Unique identifier on location level in the source system for this device.",
@@ -124,7 +152,7 @@ class IcarDeviceResource(IcarResource):
     isActive: Optional[bool] = Field(
         None, description="Indicates whether the device is active at this moment."
     )
-    supportedMessages: Optional[List[others.SupportedMessage]] = Field(
+    supportedMessages: Optional[List[SupportedMessage]] = Field(
         None, description="Identifies message types supported for the device"
     )
     manufacturer: Optional[types.IcarDeviceManufacturerType] = Field(
@@ -136,7 +164,51 @@ class IcarDeviceResource(IcarResource):
     )
 
 
+class IcarInventoryTransactionType(IcarEventCoreResource):
+    """
+    Inventory Transaction defines a transaction on a product inventory where the transaction may be a receipt, disposal, on hand, stocktake, use
+    """
+
+    transactionKind: enums.IcarInventoryTransactionKindType = Field(
+        ..., description="Identifies the transaction kind."
+    )
+    quantity: float = Field(
+        ...,
+        description="The overall volume, weight or count of the product in the transaction in the units defined.",
+    )
+    units: str = Field(
+        ...,
+        description="The units of the quantity specified.  Where applicable it is recommended that uncefact mass and volume units are used.",
+    )
+    supplierName: Optional[str] = Field(
+        None,
+        description="The supplier of the product in this transaction.  This is particularly relevant if the transaction is a receipt.",
+    )
+    expiryDate: Optional[types.IcarDateTimeType] = Field(
+        None, description="The expiry date of the product supplied in the transaction."
+    )
+    totalCost: Optional[float] = Field(
+        None, description="Total cost applied to this transaction"
+    )
+    currency: Optional[str] = Field(
+        None,
+        description="The currency of the cost expressed using the ISO 4217 3-character code (such as AUD, GBP, USD, EUR).",
+    )
+    packSize: Optional[float] = Field(
+        None,
+        description="The volume or weight of the product in a pack in the units defined. Especially relevant for Vet Medicines.",
+    )
+    numberOfPacks: Optional[float] = Field(
+        None,
+        description="The number of packs of the product in the transaction. Especially relevant for Vet Medicines. Could be a decimal number for a part-pack.",
+    )
+
+
 class IcarAnimalSetResource(IcarResource):
+    """
+    Core schema for representing animal sets (often called groups or sessions).
+    """
+
     id: str = Field(
         ..., description="Unique identifier in the source system for this animal set."
     )
@@ -155,6 +227,10 @@ class IcarAnimalSetResource(IcarResource):
 
 
 class IcarGroupEventCoreResource(IcarEventCoreResource):
+    """
+    Extends icarEventCoreResource to support event observations on groups of animals.
+    """
+
     groupMethod: enums.IcarGroupEventMethodType = Field(
         ...,
         description="Indicates whether the event references an existing animal set, has an embedded animal set, or an inventory classification.",
@@ -177,6 +253,10 @@ class IcarGroupEventCoreResource(IcarEventCoreResource):
 
 
 class IcarBatchResult(BaseModel):
+    """
+    Returned by a batch POST event to return identity (meta), errors, and warnings for a resource.
+    """
+
     id: Optional[str] = Field(
         None,
         description="Unique identifier created in the system for this event. SHOULD be a UUID.",
@@ -192,6 +272,10 @@ class IcarBatchResult(BaseModel):
 
 
 class IcarDiagnosisEventResource(IcarAnimalEventCoreResource):
+    """
+    A standalone diagnosis of one or more animal health conditions.
+    """
+
     diagnoses: Optional[List[types.IcarDiagnosisType]] = Field(
         None,
         description="Diagnosis of the animal health condition. An array allows for several conditions to be recorded at once.",
@@ -199,6 +283,10 @@ class IcarDiagnosisEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarTreatmentEventResource(IcarAnimalEventCoreResource):
+    """
+    Defines a single animal health treatment, which may be medication or procedure.
+    """
+
     medicine: Optional[types.IcarMedicineReferenceType] = Field(
         None, description="A reference to the medicine used (where applicable)."
     )
@@ -226,6 +314,10 @@ class IcarTreatmentEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarGroupTreatmentEventResource(IcarGroupEventCoreResource):
+    """
+    Defines a health treatment applied to a group of animals.
+    """
+
     medicine: Optional[types.IcarMedicineReferenceType] = Field(
         None, description="A reference to the medicine used (where applicable)."
     )
@@ -253,6 +345,10 @@ class IcarGroupTreatmentEventResource(IcarGroupEventCoreResource):
 
 
 class IcarTreatmentProgramEventResource(IcarAnimalEventCoreResource):
+    """
+    An animal health event combining diagnosis and planned or actual treatment course or events.
+    """
+
     diagnoses: Optional[List[types.IcarDiagnosisType]] = Field(
         None, description="Decribes the diagnosis of one or more conditions"
     )
@@ -267,6 +363,10 @@ class IcarTreatmentProgramEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarHealthStatusObservedEventResource(IcarAnimalEventCoreResource):
+    """
+    Event for recording animal health status
+    """
+
     observedStatus: Optional[enums.IcarAnimalHealthStatusType] = Field(
         None,
         description="Health status of the animal (such as Healthy, Suspicious, Ill, InTreatment, ToBeCulled). A null value is not supported.",
@@ -274,6 +374,10 @@ class IcarHealthStatusObservedEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarAnimalSetJoinEventResource(IcarAnimalEventCoreResource):
+    """
+    The animal set join event records animals joining animal set resources, i.e. additions of animals to a set.
+    """
+
     animalSetId: str = Field(
         ...,
         description="Unique identifier in the source system for the animal set to be joined.",
@@ -281,19 +385,31 @@ class IcarAnimalSetJoinEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarAnimalSetLeaveEventResource(IcarAnimalEventCoreResource):
+    """
+    The animal set leave event records animals leaving animal set resources, i.e. removals of animals from a set.
+    """
+
     animalSetId: str = Field(
         ...,
         description="Unique identifier in the source system for the animal set to be left.",
     )
 
 
-class IcarInventoryTransactionResource(types.IcarInventoryTransactionType):
+class IcarInventoryTransactionResource(IcarInventoryTransactionType):
+    """
+    Generic inventory transaction resource.  Some product families have specific transaction resources (e.g. medicines, feeds).
+    """
+
     product: types.IcarProductReferenceType = Field(
         ..., description="The product in this inventory transaction."
     )
 
 
 class IcarRemarkEventResource(IcarAnimalEventCoreResource):
+    """
+    This event resource is used to record a note or remark made by a farmer or other person.
+    """
+
     note: Optional[str] = Field(
         None,
         description="Unstructured, human-readable note or remark about the animal.\nConsider using `responsible` to identify the person who recorded it.",
@@ -301,6 +417,10 @@ class IcarRemarkEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarStatisticsResource(IcarResource):
+    """
+    Describes the statistics for a certain location.
+    """
+
     id: str = Field(
         ...,
         description="Unique identifier on location level in the source system for this statistics.",
@@ -324,6 +444,10 @@ class IcarStatisticsResource(IcarResource):
 
 
 class IcarTestDayResource(IcarResource):
+    """
+    Information about test day for milk sampling.
+    """
+
     id: str = Field(..., description="Unique identifier for this test day.")
     beginDate: types.IcarDateTimeType = Field(
         ...,
@@ -336,12 +460,20 @@ class IcarTestDayResource(IcarResource):
 
 
 class IcarLactationStatusObservedEventResource(IcarAnimalEventCoreResource):
+    """
+    This event records an observed lactation status without necessarily a parturition, drying off, or other event.
+    """
+
     observedStatus: Optional[enums.IcarAnimalLactationStatusType] = Field(
         None, description="The lactation status at the time of observation."
     )
 
 
 class IcarDailyMilkingAveragesResource(IcarResource):
+    """
+    Resource containing daily averages calculated from milking visit of a single animal
+    """
+
     id: Optional[str] = Field(
         None, description="Unique identifier in the source system for this event."
     )
@@ -360,6 +492,10 @@ class IcarDailyMilkingAveragesResource(IcarResource):
 
 
 class IcarMilkPredictionResource(IcarAnimalEventCoreResource):
+    """
+    This returns a prediction of the expected milk, fat and protein for a cow for the remaining the lactation. A prediction of this production on the next testday is included and it also gives indication of when the peak production is reached. The eventDateTime for this event is the date of the prediction is made.
+    """
+
     averagePredictedProduction: Optional[types.IcarMilkingPredictionType] = None
     daysInMilkAtLactationPeak: Optional[int] = Field(
         None,
@@ -370,6 +506,10 @@ class IcarMilkPredictionResource(IcarAnimalEventCoreResource):
 
 
 class IcarLactationResource(IcarResource):
+    """
+    Lactation information of an animal.
+    """
+
     id: str = Field(
         ..., description="Unique identifier in the source system for this event."
     )
@@ -414,6 +554,10 @@ class IcarLactationResource(IcarResource):
 
 
 class IcarWithdrawalEventResource(IcarAnimalEventCoreResource):
+    """
+    A withdrawal resource used to indicate that product should be separated (e.g. colostrum from newly lactating cows).
+    """
+
     endDateTime: Optional[types.IcarDateTimeType] = Field(
         None,
         description="RFC3339 UTC date and time (see https://ijmacd.github.io/rfc3339-iso8601/).",
@@ -424,6 +568,10 @@ class IcarWithdrawalEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarBreedingValueResource(IcarResource):
+    """
+    Breeding values of an animal.
+    """
+
     id: str = Field(
         ..., description="Unique identifier in the source system for this event."
     )
@@ -441,6 +589,10 @@ class IcarBreedingValueResource(IcarResource):
 
 
 class IcarLocationResource(IcarResource):
+    """
+    A location scheme / location id combination.
+    """
+
     identifier: types.IcarLocationIdentifierType = Field(
         ..., description="Unique location scheme and identifier combination."
     )
@@ -457,15 +609,48 @@ class IcarLocationResource(IcarResource):
     )
 
 
+class HeatReportScrSenseTime(BaseModel):
+    """
+    Specific info when the heat was detected by SenseTime from SCR
+    """
+
+    breedingWindow: Optional[int] = Field(None, description="Number of hours to AI.")
+    heatIndex: Optional[int] = Field(
+        None, description="Gives an indication of the certainty of the heat indication."
+    )
+
+
+class HeatReportNedapCowControl(BaseModel):
+    """
+    Specific info when the heat was detected by CowControl from NEDAP
+    """
+
+    expirationDateTime: Optional[types.IcarDateTimeType] = Field(
+        None,
+        description="RFC3339 UTC date/time when the heat will end (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
+    )
+    heatChance: Optional[int] = Field(
+        None, description="Gives an indication of the certainty of the heat indication."
+    )
+
+
 class IcarMilkingDryOffEventResource(IcarAnimalEventCoreResource):
-    pass
+    """
+    Records that the animal has been dried off from milking. If necessary, also record a separate health treatment event.
+    """
 
 
 class IcarReproAbortionEventResource(IcarAnimalEventCoreResource):
-    pass
+    """
+    The abortion event records an observation that an abortion has taken place. There are no other parameters.
+    """
 
 
 class IcarReproDoNotBreedEventResource(IcarAnimalEventCoreResource):
+    """
+    The do not breed event records an observation that an animal has been assigned not to be bred. There are no other parameters.
+    """
+
     doNotBreed: Optional[bool] = Field(
         True,
         description="Set this attribute to true if the animal should not be bred, false if it may now be bred.",
@@ -476,6 +661,12 @@ class IcarReproDoNotBreedEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarGestationResource(IcarResource):
+    """
+    This resource holds computed or predicted gestation information for animals at a location.
+    - Use this resource to understand potential sire and expected calving date.
+    - This resource should be recomputed when a heat, repro-status observation, or pregnancy check event is recorded.
+    """
+
     id: str = Field(
         ...,
         description="Unique identifier in the source system for this computed resource.",
@@ -494,12 +685,20 @@ class IcarGestationResource(IcarResource):
 
 
 class IcarReproStatusObservedEventResource(IcarAnimalEventCoreResource):
+    """
+    This event records an observed reproductive status without necessarily a pregnancy check, parturition, or other event.
+    """
+
     observedStatus: Optional[enums.IcarAnimalReproductionStatusType] = Field(
         None, description="The reproductive status at the time of observation."
     )
 
 
 class IcarReproSemenStrawResource(IcarResource):
+    """
+    Describes a semen straw
+    """
+
     id: Optional[types.IcarIdentifierType] = Field(
         None, description="Official identifier for the straw (if any)."
     )
@@ -539,6 +738,10 @@ class IcarReproSemenStrawResource(IcarResource):
 
 
 class IcarReproEmbryoResource(IcarResource):
+    """
+    Describes an implanted embryo.
+    """
+
     id: Optional[types.IcarIdentifierType] = Field(
         None, description="Official identifier for the embryo (if any)."
     )
@@ -569,6 +772,10 @@ class IcarReproEmbryoResource(IcarResource):
 
 
 class IcarProgenyDetailsResource(IcarResource):
+    """
+    Schema for representing progeny details
+    """
+
     identifier: Optional[types.IcarAnimalIdentifierType] = Field(
         None, description="Unique animal scheme and identifier combination."
     )
@@ -604,6 +811,10 @@ class IcarProgenyDetailsResource(IcarResource):
 
 
 class IcarAnimalSortingCommandResource(IcarResource):
+    """
+    Sorting data for a specific animal on a location.
+    """
+
     animal: types.IcarAnimalIdentifierType = Field(
         ..., description="Unique animal scheme and identifier combination."
     )
@@ -622,6 +833,10 @@ class IcarAnimalSortingCommandResource(IcarResource):
 
 
 class IcarSortingSiteResource(IcarResource):
+    """
+    Site available on a location.
+    """
+
     id: str = Field(..., description="Unique identifier in the system for this site.")
     name: str = Field(
         ..., description="Name of the site as it is known on the location."
@@ -632,6 +847,10 @@ class IcarSortingSiteResource(IcarResource):
 
 
 class IcarFeedResource(IcarResource):
+    """
+    Feeds available on a location.
+    """
+
     id: str = Field(
         ..., description="Unique identifier in the source system for this resource."
     )
@@ -653,6 +872,10 @@ class IcarFeedResource(IcarResource):
 
 
 class IcarRationResource(IcarResource):
+    """
+    Rations defined on a location.
+    """
+
     id: types.IcarRationIdType = Field(
         ..., description="Unique identifier in the source system for this resource."
     )
@@ -667,6 +890,10 @@ class IcarRationResource(IcarResource):
 
 
 class IcarFeedIntakeEventResource(IcarAnimalEventCoreResource):
+    """
+    Event for recording a feed intake
+    """
+
     feedingStartingDateTime: types.IcarDateTimeType = Field(
         ...,
         description="The RFC3339 UTC moment the feeding started (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
@@ -682,6 +909,10 @@ class IcarFeedIntakeEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarFeedRecommendationResource(IcarResource):
+    """
+    An overview of the recommended feeding of animals
+    """
+
     id: types.IcarFeedRecommendationIdType = Field(
         ...,
         description="Unique identifier in the source system for this recommendation.",
@@ -707,6 +938,10 @@ class IcarFeedRecommendationResource(IcarResource):
 
 
 class IcarFeedStorageResource(IcarDeviceResource):
+    """
+    Describes the feed storage device on a certain location.
+    """
+
     feedId: Optional[str] = Field(
         None, description="Unique identifier of the feed that is stored in this device."
     )
@@ -723,13 +958,21 @@ class IcarFeedStorageResource(IcarDeviceResource):
     )
 
 
-class IcarFeedTransactionResource(types.IcarInventoryTransactionType):
+class IcarFeedTransactionResource(IcarInventoryTransactionType):
+    """
+    An inventory transaction resource for a feed product.
+    """
+
     product: types.IcarFeedReferenceType = Field(
         ..., description="The feed product in this transaction."
     )
 
 
 class IcarGroupFeedingEventResource(IcarGroupEventCoreResource):
+    """
+    Event for recording group or mob feeding. Allowances represent averages so this cannot be used to populate individual animal events.
+    """
+
     feedingEndDateTime: Optional[types.IcarDateTimeType] = Field(
         None,
         description="The RFC3339 UTC moment from which animals could no longer consume the feed (eventDateTime represents the start of feed availability).",
@@ -750,33 +993,41 @@ class IcarGroupFeedingEventResource(IcarGroupEventCoreResource):
     )
 
 
-class IcarDiagnosisEvent(BaseModel):
-    __root__: IcarDiagnosisEventResource
+class IcarDiagnosisEvent(RootModel[IcarDiagnosisEventResource]):
+    root: IcarDiagnosisEventResource
 
 
-class IcarTreatmentEvent(BaseModel):
-    __root__: IcarTreatmentEventResource
+class IcarTreatmentEvent(RootModel[IcarTreatmentEventResource]):
+    root: IcarTreatmentEventResource
 
 
-class IcarGroupTreatmentEvent(BaseModel):
-    __root__: IcarGroupTreatmentEventResource
+class IcarGroupTreatmentEvent(RootModel[IcarGroupTreatmentEventResource]):
+    root: IcarGroupTreatmentEventResource
 
 
-class IcarTreatmentProgramEvent(BaseModel):
-    __root__: IcarTreatmentProgramEventResource
+class IcarTreatmentProgramEvent(RootModel[IcarTreatmentProgramEventResource]):
+    root: IcarTreatmentProgramEventResource
 
 
-class IcarHealthStatusObservedEvent(BaseModel):
-    __root__: IcarHealthStatusObservedEventResource
+class IcarHealthStatusObservedEvent(RootModel[IcarHealthStatusObservedEventResource]):
+    root: IcarHealthStatusObservedEventResource
 
 
-class IcarMedicineTransactionResource(types.IcarInventoryTransactionType):
+class IcarMedicineTransactionResource(IcarInventoryTransactionType):
+    """
+    An inventory transaction resource for a medicine product.
+    """
+
     product: types.IcarMedicineReferenceType = Field(
         ..., description="The medicine product in this transaction."
     )
 
 
 class IcarAttentionEventResource(IcarAnimalEventCoreResource):
+    """
+    Defines an alert for an animal that may require attention.
+    """
+
     alertEndDateTime: Optional[types.IcarDateTimeType] = Field(
         None,
         description="RFC3339 date time that represents the end time of an alert (start time is the eventDateTime) if it has ended.",
@@ -807,16 +1058,24 @@ class IcarAttentionEventResource(IcarAnimalEventCoreResource):
 class IcarGroupPositionObservationEventResource(
     IcarGroupEventCoreResource, types.IcarPositionObservationType
 ):
-    pass
+    """
+    This event records that a group of animals was observed in a specific position or location (either a named location or a geographic coordinate).
+    """
 
 
 class IcarPositionObservationEventResource(
     IcarAnimalEventCoreResource, types.IcarPositionObservationType
 ):
-    pass
+    """
+    This event records that an animal was observed in a specific position or location (either a named location or a geographic coordinate).
+    """
 
 
 class IcarObservationSummaryResource(IcarResource):
+    """
+    This resource (not an event) is delivered on request to summarise observations for an animal over a time period.
+    """
+
     animal: types.IcarAnimalIdentifierType = Field(
         ..., description="Unique animal scheme and identifier combination."
     )
@@ -827,6 +1086,10 @@ class IcarObservationSummaryResource(IcarResource):
 
 
 class IcarMilkingVisitEventResource(IcarAnimalEventCoreResource):
+    """
+    Event for recording milking visit
+    """
+
     milkingStartingDateTime: types.IcarDateTimeType = Field(
         ...,
         description="The RFC3339 UTC date time of the start of milking (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
@@ -881,6 +1144,10 @@ class IcarMilkingVisitEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarTestDayResultEventResource(IcarAnimalEventCoreResource):
+    """
+    Event for representing test day result
+    """
+
     milkWeight24Hours: Optional[types.IcarMilkingMilkWeightType] = None
     testDayCode: Optional[enums.IcarTestDayCodeType] = None
     milkCharacteristics: Optional[List[types.IcarMilkCharacteristicsType]] = None
@@ -888,6 +1155,10 @@ class IcarTestDayResultEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarWeightEventResource(IcarAnimalEventCoreResource):
+    """
+    The Weight event records a live weight observation of an animal.
+    """
+
     weight: Optional[types.IcarMassMeasureType] = Field(
         None, description="The weight measurement, including units and resolution."
     )
@@ -902,6 +1173,10 @@ class IcarWeightEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarGroupWeightEventResource(IcarGroupEventCoreResource):
+    """
+    The Group Weight event records liveweight observations for a group of animals
+    """
+
     units: Optional[enums.UncefactMassUnitsType] = Field(
         None,
         description="Units specified in UN/CEFACT 3-letter form. Default if not specified is KGM.",
@@ -933,16 +1208,26 @@ class IcarGroupWeightEventResource(IcarGroupEventCoreResource):
 
 
 class IcarTypeClassificationEventResource(IcarAnimalEventCoreResource):
+    """
+    Event for recording a type calssification consisting of a set of conformation scores
+    """
+
     conformationScores: Optional[List[types.IcarConformationScoreType]] = None
 
 
 class IcarConformationScoreEventResource(
     IcarAnimalEventCoreResource, types.IcarConformationScoreType
 ):
-    pass
+    """
+    Event for recording conformation score
+    """
 
 
 class IcarAnimalCoreResource(IcarResource):
+    """
+    Core schema for representing animal
+    """
+
     identifier: types.IcarAnimalIdentifierType = Field(
         ..., description="Unique animal scheme and identifier combination."
     )
@@ -1004,6 +1289,10 @@ class IcarAnimalCoreResource(IcarResource):
 
 
 class IcarMovementBirthEventResource(IcarAnimalEventCoreResource):
+    """
+    Event for recording animal birth
+    """
+
     registrationReason: Optional[enums.IcarRegistrationReasonType] = Field(
         None, description="Identifies whether this is a birth or a registration event"
     )
@@ -1014,12 +1303,20 @@ class IcarMovementBirthEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarGroupMovementBirthEventResource(IcarGroupEventCoreResource):
+    """
+    Extends icarGroupEventCoreResource to provide a group animal registration event (named Birth for consistency only).
+    """
+
     registrationReason: enums.IcarRegistrationReasonType = Field(
         ..., description="Identifies whether this is a birth or registration event"
     )
 
 
 class IcarMovementDeathEventResource(IcarAnimalEventCoreResource):
+    """
+    Event for recording animal death on farm.
+    """
+
     deathReason: Optional[enums.IcarDeathReasonType] = Field(
         None,
         description="Coded reasons for death including disease, parturition complications, consumption by humans or animals.",
@@ -1051,6 +1348,10 @@ class IcarMovementDeathEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarGroupMovementDeathEventResource(IcarGroupEventCoreResource):
+    """
+    Extends icarGroupEventCoreResource to provide a group death event.
+    """
+
     deathreason: Optional[enums.IcarDeathReasonType] = Field(
         None,
         description="Coded reason for death - this is the CAUSE, compared to the MEANS.",
@@ -1080,6 +1381,10 @@ class IcarGroupMovementDeathEventResource(IcarGroupEventCoreResource):
 
 
 class IcarMovementArrivalEventResource(IcarAnimalEventCoreResource):
+    """
+    Event for recording animal arrival
+    """
+
     arrivalReason: Optional[enums.IcarArrivalReasonType] = Field(
         None, description="Reason the animal arrived on the holding."
     )
@@ -1096,6 +1401,10 @@ class IcarMovementArrivalEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarGroupMovementArrivalEventResource(IcarGroupEventCoreResource):
+    """
+    Extends icarGroupEventCoreResource to provide a group movement arrival event.
+    """
+
     arrivalReason: enums.IcarArrivalReasonType = Field(
         ..., description="Reason the group of animals arrived on the holding."
     )
@@ -1106,6 +1415,10 @@ class IcarGroupMovementArrivalEventResource(IcarGroupEventCoreResource):
 
 
 class IcarMovementDepartureEventResource(IcarAnimalEventCoreResource):
+    """
+    Event for recording live animal departure.
+    """
+
     departureKind: Optional[enums.IcarDepartureKindType] = Field(
         None,
         description="Identifies the kind of departure of the animal from the holding.",
@@ -1123,6 +1436,10 @@ class IcarMovementDepartureEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarGroupMovementDepartureEventResource(IcarGroupEventCoreResource):
+    """
+    Extends icarGroupEventCoreResource to provide a group movement departure event.
+    """
+
     departureKind: enums.IcarDepartureKindType = Field(
         ...,
         description="Coded description of the type of departure (e.g. sale, agistment, other).",
@@ -1138,6 +1455,10 @@ class IcarGroupMovementDepartureEventResource(IcarGroupEventCoreResource):
 
 
 class IcarReproPregnancyCheckEventResource(IcarAnimalEventCoreResource):
+    """
+    Pregnancy diagnosis or check event.
+    """
+
     method: Optional[enums.IcarReproPregnancyMethodType] = Field(
         None, description="Method by which diagnosis was carried out."
     )
@@ -1163,7 +1484,20 @@ class IcarReproPregnancyCheckEventResource(IcarAnimalEventCoreResource):
     )
 
 
+class VisualDetection(BaseModel):
+    """
+    Specific info when the heat was visually detected.
+    """
+
+    heatSigns: Optional[List[enums.IcarReproHeatSignType]] = None
+    heatIntensity: Optional[enums.IcarReproHeatIntensityType] = None
+
+
 class IcarReproHeatEventResource(IcarAnimalEventCoreResource):
+    """
+    Event for recording heats.
+    """
+
     heatDetectionMethod: Optional[enums.IcarReproHeatDetectionMethodType] = None
     certainty: Optional[enums.IcarReproHeatCertaintyType] = None
     commencementDateTime: Optional[types.IcarDateTimeType] = Field(
@@ -1174,7 +1508,7 @@ class IcarReproHeatEventResource(IcarAnimalEventCoreResource):
         None,
         description="RFC3339 UTC date/time when the heat will end (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
-    visualDetection: Optional[others.VisualDetection] = Field(
+    visualDetection: Optional[VisualDetection] = Field(
         None, description="Specific info when the heat was visually detected."
     )
     optimumInseminationWindow: Optional[List[types.IcarReproHeatWindowType]] = Field(
@@ -1184,11 +1518,11 @@ class IcarReproHeatEventResource(IcarAnimalEventCoreResource):
         None,
         description="The manufacturer specific indication for the certainty of the heat",
     )
-    heatReportScrSenseTime: Optional[others.HeatReportScrSenseTime] = Field(
+    heatReportScrSenseTime: Optional[HeatReportScrSenseTime] = Field(
         None,
         description="Specific info when the heat was detected by SenseTime from SCR",
     )
-    heatReportNedapCowControl: Optional[others.HeatReportNedapCowControl] = Field(
+    heatReportNedapCowControl: Optional[HeatReportNedapCowControl] = Field(
         None,
         description="Specific info when the heat was detected by CowControl from NEDAP",
     )
@@ -1199,6 +1533,10 @@ class IcarReproHeatEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarReproInseminationEventResource(IcarAnimalEventCoreResource):
+    """
+    Event for recording natural or artificial insemination, including embryo transfer.
+    """
+
     rank: Optional[int] = Field(
         None,
         description="The rank of intervention of each AI carried out within the same reproductive cycle.",
@@ -1238,6 +1576,10 @@ class IcarReproInseminationEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarReproParturitionEventResource(IcarAnimalEventCoreResource):
+    """
+    Event for recording parturition (calving, lambing, kidding, fawning).
+    """
+
     isEmbryoImplant: Optional[bool] = Field(
         None, description="True if the progeny is the result of an embryo implant."
     )
@@ -1266,10 +1608,18 @@ class IcarReproParturitionEventResource(IcarAnimalEventCoreResource):
 
 
 class IcarReproMatingRecommendationResource(IcarAnimalEventCoreResource):
+    """
+    Mating recommendation for an animal
+    """
+
     sireRecommendations: Optional[List[types.IcarSireRecommendationType]] = None
 
 
 class IcarReproEmbryoFlushingEventResource(IcarEventCoreResource):
+    """
+    Event for recording embyro flushing
+    """
+
     flushingMethod: enums.IcarReproEmbryoFlushingMethodType
     embryoCount: Optional[int] = Field(
         None, description="The number of embryos extracted in the flushing."

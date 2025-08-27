@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import List, Optional, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, RootModel
 
 
 class Type(Enum):
@@ -12,22 +12,22 @@ class Type(Enum):
 
 class Geometry1(BaseModel):
     type: Type
-    coordinates: List[float] = Field(..., min_items=2)
-    bbox: Optional[List[float]] = Field(None, min_items=4)
+    coordinates: List[float] = Field(..., min_length=2)
+    bbox: Optional[List[float]] = Field(None, min_length=4)
 
 
 class Type1(Enum):
     LineString = "LineString"
 
 
-class Coordinate(BaseModel):
-    __root__: List[float]
+class Coordinate(RootModel[List[float]]):
+    root: List[float]
 
 
 class Geometry2(BaseModel):
     type: Type1
-    coordinates: List[Coordinate] = Field(..., min_items=2)
-    bbox: Optional[List[float]] = Field(None, min_items=4)
+    coordinates: List[Coordinate] = Field(..., min_length=2)
+    bbox: Optional[List[float]] = Field(None, min_length=4)
 
 
 class Type2(Enum):
@@ -37,7 +37,7 @@ class Type2(Enum):
 class Geometry3(BaseModel):
     type: Type2
     coordinates: List[List[Coordinate]]
-    bbox: Optional[List[float]] = Field(None, min_items=4)
+    bbox: Optional[List[float]] = Field(None, min_length=4)
 
 
 class Type3(Enum):
@@ -47,7 +47,7 @@ class Type3(Enum):
 class Geometry4(BaseModel):
     type: Type3
     coordinates: List[List[float]]
-    bbox: Optional[List[float]] = Field(None, min_items=4)
+    bbox: Optional[List[float]] = Field(None, min_length=4)
 
 
 class Type4(Enum):
@@ -57,7 +57,7 @@ class Type4(Enum):
 class Geometry5(BaseModel):
     type: Type4
     coordinates: List[List[Coordinate]]
-    bbox: Optional[List[float]] = Field(None, min_items=4)
+    bbox: Optional[List[float]] = Field(None, min_length=4)
 
 
 class Type5(Enum):
@@ -67,10 +67,12 @@ class Type5(Enum):
 class Geometry6(BaseModel):
     type: Type5
     coordinates: List[List[List[Coordinate]]]
-    bbox: Optional[List[float]] = Field(None, min_items=4)
+    bbox: Optional[List[float]] = Field(None, min_length=4)
 
 
-class Geometry(BaseModel):
-    __root__: Union[
-        Geometry1, Geometry2, Geometry3, Geometry4, Geometry5, Geometry6
-    ] = Field(..., title="GeoJSON Geometry")
+class Geometry(
+    RootModel[Union[Geometry1, Geometry2, Geometry3, Geometry4, Geometry5, Geometry6]]
+):
+    root: Union[Geometry1, Geometry2, Geometry3, Geometry4, Geometry5, Geometry6] = (
+        Field(..., title="GeoJSON Geometry")
+    )
