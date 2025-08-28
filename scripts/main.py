@@ -46,7 +46,7 @@ EXTRA_TYPES_CLASSES = {
 }
 
 
-class CodeCleaner:
+class ModelOrganizer:
     def __init__(
         self,
         input_file,
@@ -87,7 +87,7 @@ class CodeCleaner:
         self.geojson_module = self.project.root.create_file("icar/geojson.py")
         self.module_map = {}
 
-    def clean(self):
+    def organize(self):
         self.map_files()
 
         while True:
@@ -164,7 +164,7 @@ if __name__ == "__main__":
     for f in glob.iglob("../icar/*.py"):
         if os.path.exists(f) and not f.endswith("__init__.py"):
             os.remove(f)
-    code_cleaner = CodeCleaner(
+    model_organizer = ModelOrganizer(
         input_file="../tmp/raw_models.py",
         specifications="../ICAR-schema/bundled-schemes/combinedURLScheme.json",
         types_folder="../ICAR-schema/types",
@@ -172,4 +172,4 @@ if __name__ == "__main__":
         enums_folder="../ICAR-schema/enums",
         collections_folder="../ICAR-schema/collections",
     )
-    code_cleaner.clean()
+    model_organizer.organize()
