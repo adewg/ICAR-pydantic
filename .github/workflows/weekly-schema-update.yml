@@ -1,0 +1,151 @@
+name: Weekly ICAR Schema Update
+
+on:
+  schedule:
+    # Run every Sunday at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  ICAR_BRANCH: Develop
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  update-schema:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Clone/Update ICAR schema
+      run: |
+        if [ -d "ICAR-schema" ]; then
+          echo "Updating existing ICAR schema..."
+          cd ICAR-schema
+          git fetch origin
+          git reset --hard origin/${{ env.ICAR_BRANCH }}
+          cd ..
+        else
+          echo "Cloning ICAR schema..."
+          git clone -b ${{ env.ICAR_BRANCH }} https://github.com/adewg/ICAR.git ICAR-schema
+        fi
+
+        # Verify the structure
+        echo "ICAR schema directory structure:"
+        ls -la ICAR-schema/
+        echo "ICAR scripts directory:"
+        ls -la ICAR-schema/scripts/ || echo "Scripts directory not found"
+
+    - name: Verify Node.js and npm installation
+      run: |
+        echo "Node.js version: $(node --version)"
+        echo "npm version: $(npm --version)"
+        echo "npm location: $(which npm)"
+        echo "PATH: $PATH"
+    - name: Make scripts executable
+      run: |
+        chmod +x scripts/*.sh
+        chmod +x scripts/main.py
+        if [ -f "ICAR-schema/scripts/schema_bundle.sh" ]; then
+          chmod +x ICAR-schema/scripts/schema_bundle.sh
+        fi
+
+    - name: Run schema bundle
+      run: |
+        echo "Running schema bundle..."
+        echo "Working directory: $(pwd)"
+        bash ./scripts/schema_bundle.sh
+      shell: bash
+
+    - name: Run model generation
+      run: |
+        echo "Running model generation..."
+        ./scripts/generate_models.sh
+      shell: bash
+
+    - name: Run module generation
+      run: |
+        echo "Running module generation..."
+        ./scripts/generate_modules.sh
+      shell: bash
+
+    - name: Check for changes
+      id: verify-changed-files
+      run: |
+        git add -A
+        if [ -n "$(git diff --cached --name-only)" ]; then
+          echo "changed=true" >> $GITHUB_OUTPUT
+          echo "Changes detected:"
+          git diff --cached --name-only
+          echo ""
+          echo "File changes summary:"
+          git diff --cached --stat
+        else
+          echo "changed=false" >> $GITHUB_OUTPUT
+          echo "No changes detected"
+        fi
+
+    - name: Get current date
+      id: date
+      run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+    - name: Create Pull Request
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: |
+          Update ICAR schema models (${{ steps.date.outputs.date }})
+
+          Automated weekly update of ICAR schema models from upstream changes.
+        title: "🔄 Weekly ICAR Schema Update - ${{ steps.date.outputs.date }}"
+        body: |
+          ## 🔄 Automated ICAR Schema Update
+
+          This PR contains the latest changes from the ICAR schema repository.
+
+          ### Changes Made
+          - Updated ICAR schema from upstream repository (${{ env.ICAR_BRANCH }} branch)
+          - Regenerated Pydantic models using latest schema
+          - Applied code formatting and linting
+
+          ### Generated on
+          ${{ steps.date.outputs.date }}
+
+          ### Review Checklist
+          - [ ] Review generated model changes
+          - [ ] Verify no breaking changes in public API
+          - [ ] Check that tests pass
+          - [ ] Confirm schema changes are as expected
+
+          ---
+          *This PR was automatically created by the weekly schema update workflow.*
+        branch: automated-schema-update-${{ steps.date.outputs.date }}
+        delete-branch: true
+        draft: false
+        labels: |
+          automated
+          schema-update
