@@ -2,6 +2,6 @@
 
 name = "icar"
 
-VERSION = (0, 1, 0, "dev2")
+VERSION = (1, 4, 0, "dev1")
 
 __version__ = ".".join(str(v) for v in VERSION)
