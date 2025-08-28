@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date, datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, RootModel
@@ -67,7 +68,7 @@ class IcarEventCoreResource(IcarResource):
     id: Optional[str] = Field(
         None, description="Unique identifier in the source system for this event."
     )
-    eventDateTime: Optional[types.IcarDateTimeType] = Field(
+    eventDateTime: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC date and time (see https://ijmacd.github.io/rfc3339-iso8601/).",
     )
@@ -108,11 +109,11 @@ class IcarFeedReportResource(IcarResource):
         None,
         description="As per JSON-LD Hydra syntax, animals provides the array of animals part of the feeding report. This could also be a report for one animal.",
     )
-    reportStartDateTime: Optional[types.IcarDateTimeType] = Field(
+    reportStartDateTime: Optional[datetime] = Field(
         None,
         description="The RFC3339 UTC moment the period of the reporting started (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
-    reportEndDateTime: Optional[types.IcarDateTimeType] = Field(
+    reportEndDateTime: Optional[datetime] = Field(
         None,
         description="The RFC3339 UTC moment the period of the reporting ended (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -184,7 +185,7 @@ class IcarInventoryTransactionType(IcarEventCoreResource):
         None,
         description="The supplier of the product in this transaction.  This is particularly relevant if the transaction is a receipt.",
     )
-    expiryDate: Optional[types.IcarDateTimeType] = Field(
+    expiryDate: Optional[datetime] = Field(
         None, description="The expiry date of the product supplied in the transaction."
     )
     totalCost: Optional[float] = Field(
@@ -431,10 +432,10 @@ class IcarStatisticsResource(IcarResource):
     purpose: enums.IcarStatisticsPurposeType = Field(
         ..., description="Defines the purpose for these statistics."
     )
-    dateFrom: types.IcarDateType = Field(
+    dateFrom: date = Field(
         ..., description="The start of the period for which statistics are calculated."
     )
-    dateTo: types.IcarDateType = Field(
+    dateTo: date = Field(
         ..., description="The end of the period for which statistics are calculated."
     )
     group: List[types.IcarStatisticsGroupType] = Field(
@@ -449,11 +450,11 @@ class IcarTestDayResource(IcarResource):
     """
 
     id: str = Field(..., description="Unique identifier for this test day.")
-    beginDate: types.IcarDateTimeType = Field(
+    beginDate: datetime = Field(
         ...,
         description="The RFC3339 UTC datetime of the beginning of the milk sampling (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
-    endDate: types.IcarDateTimeType = Field(
+    endDate: datetime = Field(
         ...,
         description="The RFC3339 UTC datetime of the end of the milk sampling (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -480,7 +481,7 @@ class IcarDailyMilkingAveragesResource(IcarResource):
     animal: types.IcarAnimalIdentifierType = Field(
         ..., description="Unique animal scheme and identifier combination."
     )
-    averageDate: types.IcarDateType = Field(
+    averageDate: date = Field(
         ..., description="The date on which the average has been calculated."
     )
     milkYieldAvg24h: Optional[types.IcarTraitAmountType] = Field(
@@ -516,11 +517,11 @@ class IcarLactationResource(IcarResource):
     animal: types.IcarAnimalIdentifierType = Field(
         ..., description="Unique animal scheme and identifier combination."
     )
-    beginDate: Optional[types.IcarDateTimeType] = Field(
+    beginDate: Optional[datetime] = Field(
         None,
         description="The RFC3339 UTC date of the beginning of the lactation (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
-    endDate: Optional[types.IcarDateTimeType] = Field(
+    endDate: Optional[datetime] = Field(
         None,
         description="The RFC3339 UTC end date of the the lactation. This occurs when the animal is dried off, dies or calves again.",
     )
@@ -542,7 +543,7 @@ class IcarLactationResource(IcarResource):
     lactosisAmount: Optional[types.IcarTraitAmountType] = Field(
         None, description="The amount of lactosis produced in this lactation."
     )
-    lastTestDay: Optional[types.IcarDateTimeType] = Field(
+    lastTestDay: Optional[datetime] = Field(
         None,
         description="The RCF3339 UTC date of the last test day in the lactation (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -558,7 +559,7 @@ class IcarWithdrawalEventResource(IcarAnimalEventCoreResource):
     A withdrawal resource used to indicate that product should be separated (e.g. colostrum from newly lactating cows).
     """
 
-    endDateTime: Optional[types.IcarDateTimeType] = Field(
+    endDateTime: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC date and time (see https://ijmacd.github.io/rfc3339-iso8601/).",
     )
@@ -625,7 +626,7 @@ class HeatReportNedapCowControl(BaseModel):
     Specific info when the heat was detected by CowControl from NEDAP
     """
 
-    expirationDateTime: Optional[types.IcarDateTimeType] = Field(
+    expirationDateTime: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC date/time when the heat will end (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -678,7 +679,7 @@ class IcarGestationResource(IcarResource):
         None,
         description="Unique scheme/identifier combinations for the sire, including official ID and Herdbook.",
     )
-    expectedCalvingDate: types.IcarDateTimeType = Field(
+    expectedCalvingDate: datetime = Field(
         ...,
         description="The RFC3339 UTC date the calving is expected to happen (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -708,7 +709,7 @@ class IcarReproSemenStrawResource(IcarResource):
     collectionCentre: Optional[str] = Field(
         None, description="Identifies the collection centre."
     )
-    dateCollected: Optional[types.IcarDateTimeType] = Field(
+    dateCollected: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC date/time of collection (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -748,7 +749,7 @@ class IcarReproEmbryoResource(IcarResource):
     collectionCentre: Optional[str] = Field(
         None, description="Identifies the collection centre."
     )
-    dateCollected: Optional[types.IcarDateTimeType] = Field(
+    dateCollected: Optional[datetime] = Field(
         None,
         description="The RFC3339 UTC date of collection (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -795,7 +796,7 @@ class IcarProgenyDetailsResource(IcarResource):
         None, description="Name given by the farmer for this animal."
     )
     officialName: Optional[str] = Field(None, description="Official herdbook name.")
-    taggingDate: Optional[types.IcarDateTimeType] = Field(
+    taggingDate: Optional[datetime] = Field(
         None,
         description="Progeny tagging date in RFC3339 UTC (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -822,11 +823,11 @@ class IcarAnimalSortingCommandResource(IcarResource):
         ...,
         description="Array with unique site identifiers where this animal can be sorted to.",
     )
-    validFrom: types.IcarDateTimeType = Field(
+    validFrom: datetime = Field(
         ...,
         description="Specifies from when the sort command should be active. RFC3339 UTC date time (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
-    validTo: Optional[types.IcarDateTimeType] = Field(
+    validTo: Optional[datetime] = Field(
         None,
         description="Specifies until when the sort command should be active. Could be left empty, when the sorting should be ongoing (until replaced). RFC3339 UTC date time (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -876,7 +877,7 @@ class IcarRationResource(IcarResource):
     Rations defined on a location.
     """
 
-    id: types.IcarRationIdType = Field(
+    id: str = Field(
         ..., description="Unique identifier in the source system for this resource."
     )
     name: Optional[str] = Field(
@@ -894,7 +895,7 @@ class IcarFeedIntakeEventResource(IcarAnimalEventCoreResource):
     Event for recording a feed intake
     """
 
-    feedingStartingDateTime: types.IcarDateTimeType = Field(
+    feedingStartingDateTime: datetime = Field(
         ...,
         description="The RFC3339 UTC moment the feeding started (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -913,23 +914,23 @@ class IcarFeedRecommendationResource(IcarResource):
     An overview of the recommended feeding of animals
     """
 
-    id: types.IcarFeedRecommendationIdType = Field(
+    id: str = Field(
         ...,
         description="Unique identifier in the source system for this recommendation.",
     )
     animal: types.IcarAnimalIdentifierType = Field(
         ..., description="Unique animal scheme and identifier combination."
     )
-    recommendationDateTime_: Optional[types.IcarDateTimeType] = Field(
+    recommendationDateTime_: Optional[datetime] = Field(
         None,
         alias="recommendationDateTime ",
         description="The RFC3339 UTC timestamp of the recommendation (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
-    startDateTime: Optional[types.IcarDateTimeType] = Field(
+    startDateTime: Optional[datetime] = Field(
         None,
         description="The RFC3339 UTC date of the beginning of the recommendation (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
-    endDateTime: Optional[types.IcarDateTimeType] = Field(
+    endDateTime: Optional[datetime] = Field(
         None,
         description="The RFC3339 UTC end date of the recommendation (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -973,7 +974,7 @@ class IcarGroupFeedingEventResource(IcarGroupEventCoreResource):
     Event for recording group or mob feeding. Allowances represent averages so this cannot be used to populate individual animal events.
     """
 
-    feedingEndDateTime: Optional[types.IcarDateTimeType] = Field(
+    feedingEndDateTime: Optional[datetime] = Field(
         None,
         description="The RFC3339 UTC moment from which animals could no longer consume the feed (eventDateTime represents the start of feed availability).",
     )
@@ -1028,7 +1029,7 @@ class IcarAttentionEventResource(IcarAnimalEventCoreResource):
     Defines an alert for an animal that may require attention.
     """
 
-    alertEndDateTime: Optional[types.IcarDateTimeType] = Field(
+    alertEndDateTime: Optional[datetime] = Field(
         None,
         description="RFC3339 date time that represents the end time of an alert (start time is the eventDateTime) if it has ended.",
     )
@@ -1090,7 +1091,7 @@ class IcarMilkingVisitEventResource(IcarAnimalEventCoreResource):
     Event for recording milking visit
     """
 
-    milkingStartingDateTime: types.IcarDateTimeType = Field(
+    milkingStartingDateTime: datetime = Field(
         ...,
         description="The RFC3339 UTC date time of the start of milking (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -1120,7 +1121,7 @@ class IcarMilkingVisitEventResource(IcarAnimalEventCoreResource):
         None,
         description="The ID of the device where the measurement of the milking took place",
     )
-    milkingShiftLocalStartDate: Optional[types.IcarDateTimeType] = Field(
+    milkingShiftLocalStartDate: Optional[datetime] = Field(
         None,
         description="The ISO8601 date in local time zone to which this milking shift belongs. A time component is not expected or required.",
     )
@@ -1239,7 +1240,7 @@ class IcarAnimalCoreResource(IcarResource):
         ..., description="Species of the animal."
     )
     gender: enums.IcarAnimalGenderType = Field(..., description="Gender of the animal.")
-    birthDate: Optional[types.IcarDateTimeType] = Field(
+    birthDate: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC date/time of birth (see https://ijmacd.github.io/rfc3339-iso8601/ for how to use).",
     )
@@ -1500,11 +1501,11 @@ class IcarReproHeatEventResource(IcarAnimalEventCoreResource):
 
     heatDetectionMethod: Optional[enums.IcarReproHeatDetectionMethodType] = None
     certainty: Optional[enums.IcarReproHeatCertaintyType] = None
-    commencementDateTime: Optional[types.IcarDateTimeType] = Field(
+    commencementDateTime: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC date/time when the heat will start (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
-    expirationDateTime: Optional[types.IcarDateTimeType] = Field(
+    expirationDateTime: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC date/time when the heat will end (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -1555,7 +1556,7 @@ class IcarReproInseminationEventResource(IcarAnimalEventCoreResource):
     straw: Optional[IcarReproSemenStrawResource] = Field(
         None, description="Details of the straw, which may also include sire details."
     )
-    eventEndDateTime: Optional[types.IcarDateTimeType] = Field(
+    eventEndDateTime: Optional[datetime] = Field(
         None,
         description="To be used in case of running with a bull to end the period. RFC3339 UTC format (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )

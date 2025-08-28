@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List, Optional, Union
+from typing import List, Optional
 
-from pydantic import BaseModel, Field, RootModel
+from pydantic import BaseModel, Field
 
 
 class Type(Enum):
@@ -20,13 +20,9 @@ class Type1(Enum):
     LineString = "LineString"
 
 
-class Coordinate(RootModel[List[float]]):
-    root: List[float]
-
-
 class Geometry2(BaseModel):
     type: Type1
-    coordinates: List[Coordinate] = Field(..., min_length=2)
+    coordinates: List[List[float]] = Field(..., min_length=2)
     bbox: Optional[List[float]] = Field(None, min_length=4)
 
 
@@ -36,7 +32,7 @@ class Type2(Enum):
 
 class Geometry3(BaseModel):
     type: Type2
-    coordinates: List[List[Coordinate]]
+    coordinates: List[List[List[float]]]
     bbox: Optional[List[float]] = Field(None, min_length=4)
 
 
@@ -56,7 +52,7 @@ class Type4(Enum):
 
 class Geometry5(BaseModel):
     type: Type4
-    coordinates: List[List[Coordinate]]
+    coordinates: List[List[List[float]]]
     bbox: Optional[List[float]] = Field(None, min_length=4)
 
 
@@ -66,13 +62,5 @@ class Type5(Enum):
 
 class Geometry6(BaseModel):
     type: Type5
-    coordinates: List[List[List[Coordinate]]]
+    coordinates: List[List[List[List[float]]]]
     bbox: Optional[List[float]] = Field(None, min_length=4)
-
-
-class Geometry(
-    RootModel[Union[Geometry1, Geometry2, Geometry3, Geometry4, Geometry5, Geometry6]]
-):
-    root: Union[Geometry1, Geometry2, Geometry3, Geometry4, Geometry5, Geometry6] = (
-        Field(..., title="GeoJSON Geometry")
-    )

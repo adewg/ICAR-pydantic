@@ -1,18 +1,11 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, Field, RootModel, confloat, constr
+from pydantic import AnyUrl, BaseModel, Field, confloat, constr
 
 from . import enums, geojson
-
-
-class IcarDateTimeType(RootModel[datetime]):
-    root: datetime = Field(
-        ...,
-        description="A particular point in the progression of time. Shall be UTC format with Z, specified in RFC3339 (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
-    )
 
 
 class IcarMetaDataType(BaseModel):
@@ -32,22 +25,22 @@ class IcarMetaDataType(BaseModel):
         None,
         description="Boolean value indicating if this resource has been deleted in the source system.",
     )
-    modified: IcarDateTimeType = Field(
+    modified: datetime = Field(
         ...,
         description="RFC3339 UTC date/time of last modification (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
-    created: Optional[IcarDateTimeType] = Field(
+    created: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC date/time of creation (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
     creator: Optional[str] = Field(
         None, description="Person or organisation who created the object"
     )
-    validFrom: Optional[IcarDateTimeType] = Field(
+    validFrom: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC start of period when the resource is valid (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
-    validTo: Optional[IcarDateTimeType] = Field(
+    validTo: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC end of the period when the resoure is valid (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -105,10 +98,6 @@ class IcarFeedPropertyType(BaseModel):
     name: Optional[str] = Field(
         None, description="name of the property (used on the location)."
     )
-
-
-class IcarRationIdType(RootModel[str]):
-    root: str
 
 
 class IcarFeedsInRationType(BaseModel):
@@ -206,9 +195,7 @@ class IcarConsumedRationType(BaseModel):
     Gives the consumed amount of a mixed ration, and the amount the animal/group was entitled to. Amounts are real weights.
     """
 
-    rationId: IcarRationIdType = Field(
-        ..., description="The identifier for the ration consumed"
-    )
+    rationId: str = Field(..., description="The identifier for the ration consumed")
     entitlement: Optional[IcarFeedQuantityType] = Field(
         None, description="The amount of feed the animal/group was entitled to receive"
     )
@@ -289,10 +276,6 @@ class IcarDeviceReferenceType(IcarResourceReferenceType):
     )
 
 
-class IcarFeedRecommendationIdType(RootModel[str]):
-    root: str
-
-
 class IcarRecommendedFeedType(BaseModel):
     """
     Gives the recommendation to be fed to an animal or group of animals of a certain feed.
@@ -311,7 +294,7 @@ class IcarRecommendedRationType(BaseModel):
     Gives the recommendation to be fed to an animal or group of animals of a certain ration.
     """
 
-    rationId: Optional[IcarRationIdType] = Field(
+    rationId: Optional[str] = Field(
         None, description="The identifier for the ration recommended"
     )
     entitlement: Optional[IcarFeedQuantityType] = Field(
@@ -521,7 +504,7 @@ class IcarMedicineBatchType(BaseModel):
     """
 
     identifier: Optional[str] = Field(None, description="The ID, batch or lot number.")
-    expiryDate: Optional[IcarDateTimeType] = Field(
+    expiryDate: Optional[datetime] = Field(
         None,
         description="The RFC3339 UTC expiry date of the batch (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -531,7 +514,7 @@ class IcarMedicineWithdrawalType(BaseModel):
     productType: Optional[enums.IcarWithdrawalProductType] = Field(
         None, description="Product or food item affected by this withdrawal."
     )
-    endDate: Optional[IcarDateTimeType] = Field(
+    endDate: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC end date of withdrawal calculated based on treatment date and medicine rules (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -559,11 +542,11 @@ class IcarMedicineCourseSummaryType(BaseModel):
     Describes a course of treatment with total product, start and end dates
     """
 
-    startDate: Optional[IcarDateTimeType] = Field(
+    startDate: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC start date of the treatment course (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance)",
     )
-    endDate: Optional[IcarDateTimeType] = Field(
+    endDate: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC End date of the treatment course (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance)",
     )
@@ -600,10 +583,6 @@ class IcarMedicineCourseSummaryType(BaseModel):
     withdrawals: Optional[List[IcarMedicineWithdrawalType]] = Field(
         None, description="Provides withholding details for the treatment administered"
     )
-
-
-class IcarDateType(RootModel[date]):
-    root: date = Field(..., description="A particular day.")
 
 
 class IcarGroupSpecifierType(BaseModel):
@@ -684,9 +663,19 @@ class IcarPositionObservationType(BaseModel):
         None,
         description="Identifier for a sorting site (icarSortingSiteResource) for this position.",
     )
-    geometry: Optional[geojson.Geometry] = Field(
+    geometry: Optional[
+        Union[
+            geojson.Geometry1,
+            geojson.Geometry2,
+            geojson.Geometry3,
+            geojson.Geometry4,
+            geojson.Geometry5,
+            geojson.Geometry6,
+        ]
+    ] = Field(
         None,
         description="A GeoJSON geometry (such as a latitude/longitude point) that specifies the position.",
+        title="GeoJSON Geometry",
     )
 
 
@@ -695,7 +684,7 @@ class IcarObservationStatisticsType(IcarStatisticsType):
     Aggregated statistics for a animal behaviour or similar observation over a time period.
     """
 
-    startDateTime: IcarDateTimeType = Field(
+    startDateTime: datetime = Field(
         ...,
         description="The start date/time of the aggregation period for this particular statistic.",
     )
@@ -1161,11 +1150,11 @@ class IcarConsignmentType(BaseModel):
         None,
         description="The organisational details of the destination, including any necessary identifiers.",
     )
-    loadingDateTime: Optional[IcarDateTimeType] = Field(
+    loadingDateTime: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC date and time animals were loaded for transport (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
-    unloadingDateTime: Optional[IcarDateTimeType] = Field(
+    unloadingDateTime: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC date and time animals were unloaded after transport (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
@@ -1231,15 +1220,15 @@ class IcarAnimalStateType(BaseModel):
     currentLactationParity: Optional[float] = Field(
         None, description="The current parity of the animal."
     )
-    lastCalvingDate: Optional[IcarDateType] = Field(
+    lastCalvingDate: Optional[date] = Field(
         None,
         description="RFC3339 UTC date (see https://ijmacd.github.io/rfc3339-iso8601/).",
     )
-    lastInseminationDate: Optional[IcarDateType] = Field(
+    lastInseminationDate: Optional[date] = Field(
         None,
         description="RFC3339 UTC date (see https://ijmacd.github.io/rfc3339-iso8601/).",
     )
-    lastDryingOffDate: Optional[IcarDateType] = Field(
+    lastDryingOffDate: Optional[date] = Field(
         None,
         description="RFC3339 UTC date (see https://ijmacd.github.io/rfc3339-iso8601/).",
     )
@@ -1250,11 +1239,11 @@ class IcarReproHeatWindowType(BaseModel):
     The optimum breeding window for an animal in heat
     """
 
-    startDateTime: IcarDateTimeType = Field(
+    startDateTime: datetime = Field(
         ...,
         description="RFC3339 UTC date/time when the optimum insemination window starts (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
-    endDateTime: Optional[IcarDateTimeType] = Field(
+    endDateTime: Optional[datetime] = Field(
         None,
         description="RFC3339 UTC date/time when the optimum insemination window ends (see https://ijmacd.github.io/rfc3339-iso8601/ for format guidance).",
     )
